@@ -69,7 +69,7 @@ lemlib::OdomSensors_t sensors {
     &inert // inertial sensor
 };
 
-// Hello world 
+// THIS IS MY FIRST COMMIT 
 
 // creates the lemlib chassis for auto
 lemlib::Chassis chassis(drivetrain, lateralController, angularController, sensors);

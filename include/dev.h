@@ -6,6 +6,7 @@
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
 #include "autoPath.h"
+#include <memory>
 
 
 class DevPidTune {
@@ -14,6 +15,8 @@ class DevPidTune {
      lemlib::ChassisController_t* fwd;
      lemlib::ChassisController_t* turn;
      lemlib::Chassis* chassis;
+     lemlib::Drivetrain_t* drivetrain;
+     lemlib::OdomSensors_t* sensors;
 
      Routes* automatic;
 
@@ -23,12 +26,14 @@ class DevPidTune {
      static double increment;
      enum LatTurn {FWD, TURN};
      static LatTurn fwdTurn;
-     DevPidTune(pros::Controller* dev, lemlib::ChassisController_t* foward, lemlib::ChassisController_t* turning, Routes* route, lemlib::Chassis* drivetrain){
+     DevPidTune(pros::Controller* dev, lemlib::ChassisController_t* foward, lemlib::ChassisController_t* turning, Routes* route, lemlib::Chassis* controlchassis, lemlib::Drivetrain_t* drive, lemlib::OdomSensors_t* sensor){
         devControl = dev;
         fwd = foward;
         turn = turning;
         automatic = route;
-        chassis = drivetrain;
+        chassis = controlchassis;
+        drivetrain = drive;
+        sensors = sensor;
 
      }
      inline void changeKp(double num, LatTurn setting) {
@@ -120,7 +125,16 @@ class DevPidTune {
         chassis->setPose(0, 0, 0);
      }
      inline void run() {
-        automatic->autoRoute();
+        auto chas = std::make_unique<lemlib::Chassis>(*drivetrain, *fwd, *turn, *sensors);
+        switch(fwdTurn) {
+            case FWD:
+                chas->moveTo(0, 10, 5000);
+                break;
+            case TURN:
+                chas->turnTo(10, 5, 5000);
+                break;
+        }
+        chas.reset(); // Test this out!
      }
      inline void displayfwd() {
         switch (selector) {
@@ -150,25 +164,25 @@ class DevPidTune {
      inline void displayTurn() {
         switch (selector) {
             case 1:
-                devControl->print(2, 1, "TurnKp: %f", turn->kP);
+                devControl->print(1, 1, "TurnKp: %f", turn->kP);
                 break;
             case 2:
-                devControl->print(2, 1, "TurnKd: %f", turn->kD);
+                devControl->print(1, 1, "TurnKd: %f", turn->kD);
                 break;
             case 3:
-                devControl->print(2, 1, "TurnSmErr: %f", turn->smallError);
+                devControl->print(1, 1, "TurnSmErr: %f", turn->smallError);
                 break;
             case 4:
-                devControl->print(2, 1, "TurnSmTOut: %f", turn->smallErrorTimeout);
+                devControl->print(1, 1, "TurnSmTOut: %f", turn->smallErrorTimeout);
                 break;
             case 5:
-                devControl->print(2, 1, "TurnLgErr: %f", turn->largeError);
+                devControl->print(1, 1, "TurnLgErr: %f", turn->largeError);
                 break;
             case 6:
-                devControl->print(2, 1, "TurnLgTOut: %f", turn->largeErrorTimeout);
+                devControl->print(1, 1, "TurnLgTOut: %f", turn->largeErrorTimeout);
                 break;
             case 7:
-                devControl->print(2, 1, "TurnSlew: %f", turn->slew);
+                devControl->print(1, 1, "TurnSlew: %f", turn->slew);
                 break;
         }
      }
@@ -176,23 +190,22 @@ class DevPidTune {
         return increment;
      }
      inline void display() {
-        devControl->clear_line(1);
+        //devControl->clear_line(1); 
         switch(fwdTurn) {
             case FWD:
-                displayfwd();
+                displayfwd();   
                 break;
             case TURN:
                 displayTurn();
                 break;
         }
-        devControl->clear_line(2);
-        devControl->print(2, 1, "RES: %f", getResolution());
+        //devControl->clear_line(2);
      }
 
      
 
      void main() {
-        devControl -> clear();
+        if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) { devControl->clear(); }
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) { selector--; }
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) { selector++; }
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) { decreaseIncrement(); }
@@ -202,6 +215,8 @@ class DevPidTune {
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) { restPosition(); }
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) { changeSetting(increment, fwdTurn); }
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) { changeSetting(-increment, fwdTurn); }
+        //devControl->print(2, 1, "RES: %f", getResolution());
+        //pros::delay(50);
         display();
     }
 

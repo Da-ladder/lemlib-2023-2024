@@ -67,19 +67,27 @@ class AutoSelecter {
 
 class MotorUtils {
   private:
-   pros::MotorGroup* left_drive = nullptr;
-   pros::MotorGroup* right_drive = nullptr;
-   pros::Motor* motor = nullptr;
+   pros::MotorGroup* left_drive;
+   pros::MotorGroup* right_drive;
+   pros::Motor* motor;
   
   public:
    double temp_flag = 0;
 
-   MotorUtils(double max_temp, pros::MotorGroup* left = nullptr, pros::MotorGroup* right = nullptr, pros::Motor* single_motor = nullptr) {
+   MotorUtils(double max_temp, pros::MotorGroup* left, pros::MotorGroup* right) {
     left_drive = left;
     right_drive = right;
+    motor = nullptr;
+    temp_flag = max_temp;
+   }
+
+   MotorUtils(double max_temp, pros::Motor* single_motor) {
+    left_drive = nullptr;
+    right_drive = nullptr;
     motor = single_motor;
     temp_flag = max_temp;
    }
+
    bool checkGroupTemps();
    bool checkMotorTemp();
    void hold();
@@ -116,4 +124,75 @@ class Monitor {
    }
 
 
+};
+
+
+class PistonControl {
+  private:
+    pros::Controller* controller;
+    pros::ADIDigitalOut* piston;
+    pros::controller_digital_e_t button;
+    int pistionState = 0;
+
+  public:
+    PistonControl(pros::Controller* control, pros::controller_digital_e_t digitalPress, pros::ADIDigitalOut* pistonbind) {
+      controller = control;
+      piston = pistonbind;
+      button = digitalPress;
+    }
+
+    inline void setPistionState() {
+      piston->set_value(pistionState);
+    }
+
+    inline void main() {
+      if (controller->get_digital_new_press(button)) {
+        if(pistionState == 1) {
+          this->pistionState = 0;
+        } else if (pistionState == 0) {
+          this->pistionState = 1;
+        }
+        setPistionState();
+      }
+    }
+
+
+};
+
+
+class CataControl {
+  private:
+    pros::Controller* controller;
+    double stopAmp;
+    int OnOff = 0;
+    pros::controller_digital_e_t button;
+    pros::Motor* cata;
+  
+  public:
+    CataControl(pros::Controller* control, pros::controller_digital_e_t digitalPress, pros::Motor* cat, int stopCurrent) {
+      controller = control;
+      stopAmp = stopCurrent;
+      button = digitalPress;
+      cata = cat;
+    }
+    void setCataState() {
+      if (OnOff) {
+        *cata = 127;
+      } else if (!OnOff && cata->get_current_draw() > 100) {
+        if (cata->get_current_draw() > stopAmp) {
+          *cata = 0;
+        }
+      }
+    }
+
+    void main() {
+      if (controller->get_digital_new_press(button)) {
+        if(OnOff == 1) {
+          this->OnOff = 0;
+        } else if (OnOff == 0) {
+          this->OnOff = 1;
+        }
+      }
+      setCataState();
+    }
 };

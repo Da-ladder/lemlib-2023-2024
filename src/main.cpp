@@ -3,6 +3,7 @@
 #include "autoPath.h"
 #include "roborUtils.h"
 #include "dev.h"
+#include <cstdio>
 
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
@@ -19,6 +20,10 @@ pros::Motor cata(19,pros::E_MOTOR_GEARSET_36, false);
 pros::Motor immigrant(0, pros::E_MOTOR_GEARSET_06, true); // Its taken over, hijacked
 
 pros::ADIDigitalOut wings ('h', LOW);
+pros::ADIDigitalOut elevation('f', LOW);
+pros::ADIDigitalOut auxElevation('e', HIGH);
+pros::ADIDigitalOut rightMatchLoad('d', LOW);
+pros::ADIDigitalOut leftMatchLoad('c', LOW);
 
 pros::ADIPotentiometer potentiometer ('g',pros::adi_potentiometer_type_e::E_ADI_POT_EDR);
 pros::Distance cataTrigger(8);
@@ -40,22 +45,22 @@ lemlib::Drivetrain_t drivetrain {
 
 // Sets the pid for lateral control
 lemlib::ChassisController_t lateralController {
-    40, // kP
-    7, // kD
-    1, // smallErrorRange
+    15, // kP
+    17, // kD
+    .1, // smallErrorRange
     100, // smallErrorTimeout
-    3, // largeErrorRange
-    500, // largeErrorTimeout
-    5 // slew rate
+    2, // largeErrorRange
+    400, // largeErrorTimeout
+    40 // slew rate
 };
 
 // Sets the pid for turning control
 lemlib::ChassisController_t angularController {
-    21, // kP
-    8, // kD
-    2, // smallErrorRange
+    3.5, // kP
+    26, // kD
+    1, // smallErrorRange
     100, // smallErrorTimeout
-    5, // largeErrorRange
+    3, // largeErrorRange
     500, // largeErrorTimeout
     40 // slew rate
 };
@@ -69,25 +74,58 @@ lemlib::OdomSensors_t sensors {
     &inert // inertial sensor
 };
 
-// THIS IS MY FIRST COMMIT 
-
 // creates the lemlib chassis for auto
 lemlib::Chassis chassis(drivetrain, lateralController, angularController, sensors);
 
 
+// Sets up OverTemp notifications along with Controller push notifications
 MotorUtils chassisThermo(50, &left_side_motors, &right_side_motors);
-MotorUtils cataThermo(45, nullptr, nullptr, &cata);
-MotorUtils intakeThermo(45, nullptr, nullptr, &intake);
-AutoSelecter path(&potentiometer);
-Routes roam(&chassis, &path, &intake, &cata);
+MotorUtils cataThermo(45, &cata);
+MotorUtils intakeThermo(45, &intake);
 Controller_Out controlOut(&master);
 Monitor temps(&controlOut, &chassisThermo, &cataThermo, &intakeThermo);
-DevPidTune developerMode(&devControl, &lateralController, &angularController, &roam, &chassis);
+
+// Sets up Automous path selector
+AutoSelecter path(&potentiometer);
+Routes roam(&chassis, &path, &intake, &cata);
+
+// Sets up the PID tuner on the developer controller (second controller)
+DevPidTune developerMode(&devControl, &lateralController, &angularController, &roam, &chassis, &drivetrain, &sensors);
+
+// Sets up all piston uilities
+PistonControl controlWing(&master, pros::E_CONTROLLER_DIGITAL_L2, &wings);
+PistonControl controlElevation(&master, pros::E_CONTROLLER_DIGITAL_X, &elevation);
+PistonControl controlLeftMatch(&master, pros::E_CONTROLLER_DIGITAL_LEFT, &leftMatchLoad);
+PistonControl controlRightMatch(&master, pros::E_CONTROLLER_DIGITAL_RIGHT, &rightMatchLoad);
+PistonControl auxControlElevate(&master, pros::E_CONTROLLER_DIGITAL_Y, &auxElevation);
+
+
+CataControl controlCata(&master, pros::E_CONTROLLER_DIGITAL_A, &cata, 2280); //2200
 
 void moniterStart(){
 	while (true) {
 		temps.checkTemps();
 		pros::delay(500);
+	}
+}
+
+
+// starts pistion 
+void pistonUtils(){
+	while (true) {
+		controlWing.main();
+		controlElevation.main();
+		controlLeftMatch.main();
+		controlRightMatch.main();
+		auxControlElevate.main();
+		pros::delay(50);
+	}
+}
+
+void cataUtil() {
+	while (true) {
+		controlCata.main();
+		pros::delay(10);
 	}
 }
 
@@ -103,8 +141,11 @@ void initialize() {
 	chassis.calibrate();
 	master.clear();
 	chassisThermo.coast();
+	pros::delay(150);
+	devControl.clear();
 	//pros::Task tempMonitor(moniterStart);
-	//tempMonitor.resume();
+	pros::Task pistonControls(pistonUtils);
+	pros::Task cat(cataUtil);
 }
 
 /**
@@ -155,7 +196,6 @@ void autonomous() {
  */
 void opcontrol() {
 	bool cata_on = false;
-	bool wing_on = false;
 	bool dev_mode = true;
 	//autonomous();
 	
@@ -179,18 +219,7 @@ void opcontrol() {
 			default:
 				pros::lcd::print(3, "None");
 		}
-
-		/*
-		if (path.checkPath() == AutoSelecter::MATCHLOAD) {
-        pros::lcd::print(3, "MATCHLOAD");
-    	} else if (path.checkPath() == AutoSelecter::NOMATCHLOAD) {
-        pros::lcd::print(3, "NOMATCHLOAD");
-    	} else if (path.checkPath() == AutoSelecter::SKILLS) {
-        pros::lcd::print(3, "SKILLS");
-    	} else {
-        pros::lcd::print(3, "None");
-    	}
-		*/
+		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) { roam.autoRoute(); }
 
 			
 		
@@ -214,31 +243,10 @@ void opcontrol() {
 			intake = 0;
 		}
 
-		
-		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
-			wing_on = !wing_on;
-		}
-		if (wing_on) {
-			wings.set_value(1);
-		} else {
-			wings.set_value(0);
-		}
-
-        if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) { 
-			cata_on = !cata_on;
-		}
-		if (cata_on) {
-			cata = 127;
-		} else {
-			while (cataTrigger.get() > 75) {
-				cata = 110;
-			}
-			cata = 0;
-			
-		}
 		left_side_motors = left;
 		right_side_motors = right;
-
+		
+		
 		if (dev_mode) {
 			developerMode.main();
 		}

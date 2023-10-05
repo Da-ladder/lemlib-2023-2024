@@ -87,7 +87,7 @@ Monitor temps(&controlOut, &chassisThermo, &cataThermo, &intakeThermo);
 
 // Sets up Automous path selector
 AutoSelecter path(&potentiometer);
-Routes roam(&chassis, &path, &intake, &cata);
+Routes roam(&chassis, &path, &intake, &cata, &left_side_motors, &right_side_motors, &wings);
 
 // Sets up the PID tuner on the developer controller (second controller)
 DevPidTune developerMode(&devControl, &lateralController, &angularController, &roam, &chassis, &drivetrain, &sensors);

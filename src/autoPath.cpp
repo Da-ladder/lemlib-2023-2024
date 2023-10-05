@@ -14,13 +14,13 @@ void Routes::nomatchload() {
     *intake = 127;
     drive ->moveTo(0, 46, 2000);
     drive ->moveTo(0, 52, 400);
-    pros::delay(300);
+    pros::delay(250);
     *intake = 0;
     drive ->turnTo(-17.68, 47.81, 800);
     *intake = -127;
-    pros::delay(200);
-    *intake = 0;
+    //pros::delay(200);
     drive ->moveTo(-17.68, 47.81, 700);
+    *intake = 0;
 
     
     //Get second triball into goal
@@ -38,7 +38,7 @@ void Routes::nomatchload() {
     *intake = -127;
     pros::delay(200);
     *intake = 0;
-    drive ->moveTo(-20.5, 48.07, 1000);
+    drive ->moveTo(-32.5, 48.07, 3000);
     
 
 
@@ -49,16 +49,71 @@ void Routes::nomatchload() {
     
     *intake = 127;
     drive ->moveTo(3.05, 3.23, 2000);
-    drive ->turnTo(5.01, -2.71, 400);
-    drive ->moveTo(5.01, -2.71, 700);
-    pros::delay(300);
-    *intake = 0;
+    manual_control(-100, -127);
+    pros::delay(500);
+    manual_control(0, 0);
+    //*intake = 0;
+    
+
+
     
     
 }
 
 void Routes::skills() {
-    //do something
+    //score alliance triball
+    drive ->moveTo(0, 58, 2000);
+    drive ->turnTo(-9.73, 58, 700);
+    *intake = -127;
+    pros::delay(200);
+    *intake = 0;
+    drive ->moveTo(-9.73, 58, 600);
+    
+    // score barrier triball
+    drive ->moveTo(2.69, 58, 600);
+    drive ->turnTo(0, 100, 200); // FORCES TURN
+    drive ->turnTo(16, 58, 1000);
+    *intake = 127;
+    drive ->moveTo(14, 58, 800);
+    drive ->moveTo(15, 58, 200);
+    drive ->turnTo(0, 100, 200); // FORCES TURN
+    drive ->turnTo(-10.72, 58, 1000);
+    *intake = -127;
+    pros::delay(200);
+    *intake = 0;
+    drive ->moveTo(-15.72, 58, 1800); //-12.72
+
+    // get matchload??
+    drive ->moveTo(-5.29, 58, 1000);
+
+    drive ->turnTo(-5.29, 100, 1200); // force turn?
+    //drive ->turnTo(-5.29, 26.44, 1000); // TURN
+    drive ->moveTo(-5.29, 26.44, 2000);
+
+
+
+
+    
+
+    drive ->turnTo(-14.2, 50, 600); // SHIT
+    drive ->turnTo(-14.2, 26.44, 1000);
+    drive ->moveTo(14.2, 26.44, 2000);
+
+    wing ->set_value(true);
+    //manual_control(-3, 0);
+    pros::delay(100000);
+
+    //drive ->turnTo(3.58, 52.24, 1000);
+    //drive ->moveTo(3.58, 52.24, 2000);
+    
+
+    
+
+    /*
+    */
+
+
+
 
 }
 

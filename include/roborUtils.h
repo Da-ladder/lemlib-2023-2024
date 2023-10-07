@@ -145,6 +145,11 @@ class PistonControl {
       piston->set_value(pistionState);
     }
 
+    inline void overrideState(int state) {
+      pistionState = state;
+      setPistionState();
+    }
+
     inline void main() {
       if (controller->get_digital_new_press(button)) {
         if(pistionState == 1) {

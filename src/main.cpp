@@ -19,11 +19,10 @@ pros::Motor intake(17, pros::E_MOTOR_GEARSET_18, false);
 pros::Motor cata(19,pros::E_MOTOR_GEARSET_36, false);
 pros::Motor immigrant(0, pros::E_MOTOR_GEARSET_06, true); // Its taken over, hijacked
 
-pros::ADIDigitalOut wings ('h', LOW);
-pros::ADIDigitalOut elevation('f', LOW);
-pros::ADIDigitalOut auxElevation('e', HIGH);
-pros::ADIDigitalOut rightMatchLoad('d', LOW);
-pros::ADIDigitalOut leftMatchLoad('c', LOW);
+pros::ADIDigitalOut leftWing('d', LOW);
+pros::ADIDigitalOut primaryElevation('f', HIGH); // LINK
+pros::ADIDigitalOut auxElevation('e', LOW); // LINK
+pros::ADIDigitalOut rightWing('h', LOW);
 
 pros::ADIPotentiometer potentiometer ('g',pros::adi_potentiometer_type_e::E_ADI_POT_EDR);
 pros::Distance cataTrigger(8);
@@ -87,17 +86,16 @@ Monitor temps(&controlOut, &chassisThermo, &cataThermo, &intakeThermo);
 
 // Sets up Automous path selector
 AutoSelecter path(&potentiometer);
-Routes roam(&chassis, &path, &intake, &cata, &left_side_motors, &right_side_motors, &wings);
+Routes roam(&chassis, &path, &intake, &cata, &left_side_motors, &right_side_motors, &leftWing);
 
 // Sets up the PID tuner on the developer controller (second controller)
 DevPidTune developerMode(&devControl, &lateralController, &angularController, &roam, &chassis, &drivetrain, &sensors);
 
 // Sets up all piston uilities
-PistonControl controlWing(&master, pros::E_CONTROLLER_DIGITAL_L2, &wings);
-PistonControl controlElevation(&master, pros::E_CONTROLLER_DIGITAL_X, &elevation);
-PistonControl controlLeftMatch(&master, pros::E_CONTROLLER_DIGITAL_LEFT, &leftMatchLoad);
-PistonControl controlRightMatch(&master, pros::E_CONTROLLER_DIGITAL_RIGHT, &rightMatchLoad);
-PistonControl auxControlElevate(&master, pros::E_CONTROLLER_DIGITAL_Y, &auxElevation);
+PistonControl controlLeftWing(&master, pros::E_CONTROLLER_DIGITAL_L2, &leftWing);
+PistonControl controlElevation(&devControl, pros::E_CONTROLLER_DIGITAL_L1, &primaryElevation);
+PistonControl controlRightWing(&master, pros::E_CONTROLLER_DIGITAL_L1, &rightWing);
+PistonControl auxControlElevate(&master, pros::E_CONTROLLER_DIGITAL_X, &auxElevation);
 
 
 CataControl controlCata(&master, pros::E_CONTROLLER_DIGITAL_A, &cata, 2280); //2200
@@ -113,10 +111,12 @@ void moniterStart(){
 // starts pistion 
 void pistonUtils(){
 	while (true) {
-		controlWing.main();
-		controlElevation.main();
-		controlLeftMatch.main();
-		controlRightMatch.main();
+		controlLeftWing.main();
+		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) && master.get_digital(pros::E_CONTROLLER_DIGITAL_X)) {
+			controlElevation.overrideState(0);
+			auxControlElevate.overrideState(1);
+		}
+		controlRightWing.main();
 		auxControlElevate.main();
 		pros::delay(50);
 	}

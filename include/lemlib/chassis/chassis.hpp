@@ -55,6 +55,7 @@ typedef struct {
 typedef struct {
         float kP;
         float kD;
+        float kI; // Added for robor
         float smallError;
         float smallErrorTimeout;
         float largeError;
@@ -150,7 +151,36 @@ class Chassis {
          * @param maxSpeed the maximum speed the robot can move at
          * @param log whether the chassis should log the turnTo function. false by default
          */
+        void angleTurnTo(float angle, int timeout, float errorRange = 1.5, float kI_dis = 0, bool reversed = false, float maxSpeed = 127, bool log = false);
+        /**
+         * @brief Move the chassis towards the target point using angle
+         *
+         * The PID logging ids are "angularPID" and "lateralPID"
+         *
+         * @param angle what angle in degrees to turn to
+         * @param timeout longest time the robot can spend moving
+         * @param error will terminate the loop within error
+         * @param kI_dis will use kI within the angle sepificied
+         * @param reversed whether the robot should turn in the opposite direction
+         * @param maxSpeed the maximum speed the robot can move at
+         * @param log whether the chassis should log the turnTo function. false by default
+         */
+
         void moveTo(float x, float y, int timeout, float maxSpeed = 200, bool log = false);
+        
+        /**
+         * @brief Move the chassis towards the target
+         *
+         * The PID logging ids are "angularPID" and "lateralPID"
+         *
+         * @param x target x pos
+         * @param y target y pos
+         * @param timeout longest time the robot can spend moving
+         * @param error will terminate the loop within error
+         * @param kI_dis will use kI within the angle sepificied
+         * @param maxSpeed the maximum speed the robot can move at
+         */
+        void moveToKI(float x, float y, int timeout, float errorRange = 1, float kI_dis = 0, float maxSpeed = 127);
         /**
          * @brief Move the chassis along a path
          *
@@ -164,6 +194,8 @@ class Chassis {
          */
         void follow(const char* filePath, int timeout, float lookahead, bool reverse = false, float maxSpeed = 127,
                     bool log = false);
+
+        void followFromVector(std::vector<std::string>* pointList, int timeout, float lookahead, bool reverse = false, float maxSpeed = 127, bool log = false);
     private:
         ChassisController_t lateralSettings;
         ChassisController_t angularSettings;

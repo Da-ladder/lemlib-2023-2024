@@ -9,12 +9,12 @@
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::Controller devControl(pros::E_CONTROLLER_PARTNER);
 
-pros::Motor left_motor_A(16, pros::E_MOTOR_GEARSET_06, false); // port 1, blue gearbox, not reversed
-pros::Motor left_motor_B(18, pros::E_MOTOR_GEARSET_06, true); // port 2, green gearbox, not reversed
-pros::Motor left_motor_C(20, pros::E_MOTOR_GEARSET_06, true); // port 3, red gearbox, reversed
-pros::Motor right_motor_A(11, pros::E_MOTOR_GEARSET_06, false); // port 4, red gearbox, reversed
-pros::Motor right_motor_B(14, pros::E_MOTOR_GEARSET_06, false); // port 3, red gearbox, reversed
-pros::Motor right_motor_C( 15, pros::E_MOTOR_GEARSET_06, true); // port 4, red gearbox, reversed
+pros::Motor left_motor_A(16, pros::E_MOTOR_GEARSET_06, false); // port 16, blue, not reversed
+pros::Motor left_motor_B(18, pros::E_MOTOR_GEARSET_06, true); // port 18, blue, reversed
+pros::Motor left_motor_C(20, pros::E_MOTOR_GEARSET_06, true); // port 20, blue, reversed
+pros::Motor right_motor_A(11, pros::E_MOTOR_GEARSET_06, false); // port 11, blue, not reversed
+pros::Motor right_motor_B(14, pros::E_MOTOR_GEARSET_06, false); // port 14, blue, not reversed
+pros::Motor right_motor_C( 15, pros::E_MOTOR_GEARSET_06, true); // port 15, blue, reversed
 pros::Motor intake(17, pros::E_MOTOR_GEARSET_18, false);
 pros::Motor cata(19,pros::E_MOTOR_GEARSET_36, false);
 pros::Motor immigrant(0, pros::E_MOTOR_GEARSET_06, true); // Its taken over, hijacked
@@ -46,10 +46,11 @@ lemlib::Drivetrain_t drivetrain {
 lemlib::ChassisController_t lateralController {
     15, // kP
     17, // kD
+	10, //kI
     .1, // smallErrorRange
-    100, // smallErrorTimeout
+    400, // smallErrorTimeout
     2, // largeErrorRange
-    400, // largeErrorTimeout
+    500, // largeErrorTimeout
     40 // slew rate
 };
 
@@ -57,6 +58,7 @@ lemlib::ChassisController_t lateralController {
 lemlib::ChassisController_t angularController {
     3.5, // kP
     26, // kD
+	0, // kI
     1, // smallErrorRange
     100, // smallErrorTimeout
     3, // largeErrorRange
@@ -86,10 +88,12 @@ Monitor temps(&controlOut, &chassisThermo, &cataThermo, &intakeThermo);
 
 // Sets up Automous path selector
 AutoSelecter path(&potentiometer);
-Routes roam(&chassis, &path, &intake, &cata, &left_side_motors, &right_side_motors, &leftWing);
+Routes roam(&chassis, &path, &intake, &cata, 
+			&left_side_motors, &right_side_motors, &rightWing, &leftWing);
 
 // Sets up the PID tuner on the developer controller (second controller)
-DevPidTune developerMode(&devControl, &lateralController, &angularController, &roam, &chassis, &drivetrain, &sensors);
+DevPidTune developerMode(&devControl, &lateralController, &angularController, 
+						 &roam, &chassis, &drivetrain, &sensors);
 
 // Sets up all piston uilities
 PistonControl controlLeftWing(&master, pros::E_CONTROLLER_DIGITAL_L2, &leftWing);
@@ -98,7 +102,7 @@ PistonControl controlRightWing(&master, pros::E_CONTROLLER_DIGITAL_L1, &rightWin
 PistonControl auxControlElevate(&master, pros::E_CONTROLLER_DIGITAL_X, &auxElevation);
 
 
-CataControl controlCata(&master, pros::E_CONTROLLER_DIGITAL_A, &cata, 2280); //2200
+CataControl controlCata(&master, pros::E_CONTROLLER_DIGITAL_A, &cata, 2100); //2280
 
 void moniterStart(){
 	while (true) {
@@ -112,7 +116,8 @@ void moniterStart(){
 void pistonUtils(){
 	while (true) {
 		controlLeftWing.main();
-		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) && master.get_digital(pros::E_CONTROLLER_DIGITAL_X)) {
+		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) && 
+			master.get_digital(pros::E_CONTROLLER_DIGITAL_X)) {
 			controlElevation.overrideState(0);
 			auxControlElevate.overrideState(1);
 		}
@@ -131,10 +136,7 @@ void cataUtil() {
 
 
 /**
- * Runs initialization code. This occurs as soon as the program is started.
- *
- * All other competition modes are blocked by initialize; it is recommended
- * to keep execution time for this mode under a few seconds.
+ * @brief 
  */
 void initialize() {
 	pros::lcd::initialize();
@@ -206,6 +208,7 @@ void opcontrol() {
         pros::lcd::print(2, "heading: %f", pose.theta); // print the heading
 
 		//Efficent+
+		
 		switch (path.checkPath()) {
 			case AutoSelecter::MATCHLOAD:
 				pros::lcd::print(3, "MATCHLOAD");
@@ -216,15 +219,34 @@ void opcontrol() {
 			case AutoSelecter::SKILLS:
 				pros::lcd::print(3, "SKILLS");
 				break;
+			case AutoSelecter::PLACEHOLD1:
+				pros::lcd::print(3, "PLACEHOLD1");
+				break;
+			case AutoSelecter::PLACEHOLD2:
+				pros::lcd::print(3, "PLACEHOLD2");
+				break;
+			case AutoSelecter::PLACEHOLD3:
+				pros::lcd::print(3, "PLACEHOLD3");
+				break;
+			case AutoSelecter::PLACEHOLD4:
+				pros::lcd::print(3, "PLACEHOLD4");
+				break;
+			case AutoSelecter::PLACEHOLD5:
+				pros::lcd::print(3, "PLACEHOLD5");
+				break;
 			default:
 				pros::lcd::print(3, "None");
 		}
+		
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) { roam.autoRoute(); }
 
 			
 		
-		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) { controlOut.silence(); }
-		else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) { controlOut.unsilence(); }
+		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) 
+		{ controlOut.silence(); }
+
+		else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) 
+		{ controlOut.unsilence(); }
 
 		//std::cout << "wwll well well" << std::endl; ???
 

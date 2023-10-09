@@ -12,24 +12,31 @@ class Routes{
     pros::Motor* cata;
     pros::Motor_Group* left;
     pros::Motor_Group* right;
-    pros::ADIDigitalOut* wing;
+    pros::ADIDigitalOut* rightWing;
+    pros::ADIDigitalOut* leftWing;
     
     
     public:
-     Routes(Chassis* drivetrain, AutoSelecter* inpath, pros::Motor* in, pros::Motor* cap, pros::Motor_Group* drive_left, pros::Motor_Group* drive_right, pros::ADIDigitalOut* wings) {
+     Routes(Chassis* drivetrain, AutoSelecter* inpath, pros::Motor* in, pros::Motor* cap, pros::Motor_Group* drive_left, pros::Motor_Group* drive_right, pros::ADIDigitalOut* rwings, pros::ADIDigitalOut* lwings) {
         drive = drivetrain;
         path = inpath;
         intake = in;
         cata = cap;
         left = drive_left;
         right = drive_right;
-        wing = wings;
+        rightWing = rwings;
+        leftWing = lwings;
      }
      void initDrive(lemlib::Chassis* drivetrain);
      void matchload();
      void nomatchload();
      void skills();
      void autoRoute();
+     void placehold1();
+     void placehold2();
+     void placehold3();
+     void placehold4();
+     void placehold5();
      inline void manual_control(double l, double r) {
       *left = l;
       *right = r;

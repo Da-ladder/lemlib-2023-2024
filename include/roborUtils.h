@@ -39,7 +39,18 @@ class AutoSelecter {
    pros::ADIPotentiometer* selector;
 
   public:
-   enum AutoPath {MATCHLOAD, NOMATCHLOAD, SKILLS, NONE};
+   enum AutoPath {MATCHLOAD, NOMATCHLOAD, SKILLS, PLACEHOLD1, PLACEHOLD2, PLACEHOLD3, PLACEHOLD4, PLACEHOLD5, NONE};
+   std::vector <AutoPath> listing = {
+    MATCHLOAD,
+    NOMATCHLOAD, 
+    SKILLS, 
+    PLACEHOLD1, 
+    PLACEHOLD2, 
+    PLACEHOLD3, 
+    PLACEHOLD4, 
+    PLACEHOLD5, 
+    NONE
+   };
    AutoSelecter (pros::ADIPotentiometer* sensor, pros::Controller* controller = nullptr) {
     keyboard = controller;
     selector = sensor;
@@ -47,20 +58,11 @@ class AutoSelecter {
    AutoPath route;
    inline AutoPath checkPath() {
     int angle = (int) (selector->get_angle() / 20);
-    switch (angle) {
-      case 1:
-        route = MATCHLOAD;
-        return route;
-      case 2:
-        route = NOMATCHLOAD;
-        return route;
-      case 3:
-        route = SKILLS;
-        return route;
-      default:
-        route = NONE;
-        return route;
+    if (angle >= 8) {
+      return NONE;
     }
+    route = listing[angle];
+    return route;
    }
 };
 

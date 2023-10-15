@@ -6,8 +6,11 @@
 #include "main.h"
 
 
+PeerPursuit sup;
+
+
 void Routes::matchload() {
-    PeerPursuit sup;
+    
     //drive->turnTo(10,10, 20000);
     drive->followFromVector(&sup.route1, 2000, 3);
     //drive ->moveToKI(0, 10, 10000, 1, 4, 200);
@@ -179,6 +182,23 @@ void Routes::placehold1() {
 }
 
 void Routes::placehold2() {
+    ezchas->leftSwing(30, 127);
+    pros::delay(700);
+    ezchas->rightSwing(-20, 127);
+
+    //*cata = 127;
+    /*
+    int reps = 0;
+    while (reps != 100) {
+        drive->moveTo(1, 11.3, 1000);
+        reps ++;
+        pros::delay(100);
+    }
+    */
+    ptoEZChas(true);
+    drive->follow("skillsv1.txt", 5000, 10);
+
+    //drive->followFromVector(&sup.route1, 3000, 3);
 
 }
 

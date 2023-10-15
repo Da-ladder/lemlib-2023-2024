@@ -51,6 +51,7 @@ class AutoSelecter {
     PLACEHOLD5, 
     NONE
    };
+   
    AutoSelecter (pros::ADIPotentiometer* sensor, pros::Controller* controller = nullptr) {
     keyboard = controller;
     selector = sensor;
@@ -64,6 +65,7 @@ class AutoSelecter {
     route = listing[angle];
     return route;
    }
+   
 };
 
 
@@ -201,5 +203,23 @@ class CataControl {
         }
       }
       setCataState();
+    }
+};
+
+class swingCtrl {
+  private:
+    Drive *echassis;
+
+  public:
+    swingCtrl(Drive *chassis) {
+      echassis = chassis;
+    }
+
+    inline void rightSwing(double angle, int speed) {
+      echassis->set_swing_pid(e_swing::RIGHT_SWING, angle, speed);
+    }
+
+    inline void leftSwing(double angle, int speed) {
+      echassis->set_swing_pid(e_swing::LEFT_SWING, angle, speed);
     }
 };

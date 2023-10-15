@@ -14,10 +14,12 @@ class Routes{
     pros::Motor_Group* right;
     pros::ADIDigitalOut* rightWing;
     pros::ADIDigitalOut* leftWing;
+    swingCtrl* ezchas;
     
     
     public:
-     Routes(Chassis* drivetrain, AutoSelecter* inpath, pros::Motor* in, pros::Motor* cap, pros::Motor_Group* drive_left, pros::Motor_Group* drive_right, pros::ADIDigitalOut* rwings, pros::ADIDigitalOut* lwings) {
+     Routes(Chassis* drivetrain, AutoSelecter* inpath, pros::Motor* in, pros::Motor* cap, pros::Motor_Group* drive_left, pros::Motor_Group* drive_right, pros::ADIDigitalOut* rwings, 
+            pros::ADIDigitalOut* lwings, swingCtrl* ezchass) {
         drive = drivetrain;
         path = inpath;
         intake = in;
@@ -26,6 +28,7 @@ class Routes{
         right = drive_right;
         rightWing = rwings;
         leftWing = lwings;
+        ezchas = ezchass;
      }
      void initDrive(lemlib::Chassis* drivetrain);
      void matchload();

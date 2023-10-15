@@ -41,6 +41,7 @@
  */
 //#include "okapi/api.hpp"
 //#include "pros/api_legacy.h"
+#include "EZ-Template/api.hpp"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
@@ -62,6 +63,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+void ptoEZChas(bool state);
 void autonomous(void);
 void initialize(void);
 void disabled(void);

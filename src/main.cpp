@@ -6,6 +6,12 @@
 #include <cstdio>
 
 
+
+
+//*****************************************************************************************************************************
+/**
+ * @brief initializes all motors, pistons, controllers, and sensors on the bot
+*/
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::Controller devControl(pros::E_CONTROLLER_PARTNER);
 
@@ -31,6 +37,37 @@ pros::IMU inert(1);
 
 pros::MotorGroup left_side_motors({left_motor_A, left_motor_B, left_motor_C});
 pros::MotorGroup right_side_motors({right_motor_A, right_motor_B, right_motor_C});
+//*****************************************************************************************************************************
+
+// Sets up drive using EZ lib for swing movements
+Drive ezChassis {
+  // Left Chassis Ports (negative port will reverse it!)
+  //   the first port is the sensored port (when trackers are not used!)
+  {16, -18, -20}
+
+  // Right Chassis Ports (negative port will reverse it!)
+  //   the first port is the sensored port (when trackers are not used!)
+  ,{11, 14, -15}
+
+  // IMU Port
+  ,1
+
+  // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
+  //    (or tracking wheel diameter)
+  ,3.25
+
+  // Cartridge RPM
+  //   (or tick per rotation if using tracking wheels)
+  ,600
+
+  // External Gear Ratio (MUST BE DECIMAL)
+  //    (or gear ratio of tracking wheel)
+  // eg. if your drive is 84:36 where the 36t is powered, your RATIO would be 2.333.
+  // eg. if your drive is 36:60 where the 60t is powered, your RATIO would be 0.6.
+  ,2.333
+};
+
+swingCtrl swing(&ezChassis);
 
 
 // Sets up the auto drivetrain
@@ -89,7 +126,8 @@ Monitor temps(&controlOut, &chassisThermo, &cataThermo, &intakeThermo);
 // Sets up Automous path selector
 AutoSelecter path(&potentiometer);
 Routes roam(&chassis, &path, &intake, &cata, 
-			&left_side_motors, &right_side_motors, &rightWing, &leftWing);
+			&left_side_motors, &right_side_motors, 
+			&rightWing, &leftWing, &swing);
 
 // Sets up the PID tuner on the developer controller (second controller)
 DevPidTune developerMode(&devControl, &lateralController, &angularController, 
@@ -101,9 +139,10 @@ PistonControl controlElevation(&devControl, pros::E_CONTROLLER_DIGITAL_L1, &prim
 PistonControl controlRightWing(&master, pros::E_CONTROLLER_DIGITAL_L1, &rightWing);
 PistonControl auxControlElevate(&master, pros::E_CONTROLLER_DIGITAL_X, &auxElevation);
 
-
+// Sets up cata control using current to stop the motor at a designated angle
 CataControl controlCata(&master, pros::E_CONTROLLER_DIGITAL_A, &cata, 2100); //2280
 
+// A function that loops forever to check motor temperatures (used by a thread)
 void moniterStart(){
 	while (true) {
 		temps.checkTemps();
@@ -112,7 +151,8 @@ void moniterStart(){
 }
 
 
-// starts pistion 
+// starts pistions so that they can be toggled using a controller
+// Loops forever and is used by a thread
 void pistonUtils(){
 	while (true) {
 		controlLeftWing.main();
@@ -127,6 +167,7 @@ void pistonUtils(){
 	}
 }
 
+// starts Cata utilities so the catapult can be controlled
 void cataUtil() {
 	while (true) {
 		controlCata.main();
@@ -134,9 +175,13 @@ void cataUtil() {
 	}
 }
 
+void ptoEZChas(bool state) {
+	ezChassis.pto_toggle({left_motor_A, left_motor_B, left_motor_C}, state);
+	ezChassis.pto_toggle({right_motor_A, right_motor_B, right_motor_C}, state);
+}
 
 /**
- * @brief 
+ * @brief Runs right when the program is started (threads and initialization procedures are located here)
  */
 void initialize() {
 	pros::lcd::initialize();
@@ -145,15 +190,14 @@ void initialize() {
 	chassisThermo.coast();
 	pros::delay(150);
 	devControl.clear();
-	//pros::Task tempMonitor(moniterStart);
+	pros::Task tempMonitor(moniterStart); //idk if this slows down anything???
 	pros::Task pistonControls(pistonUtils);
 	pros::Task cat(cataUtil);
 }
 
 /**
- * Runs while the robot is in the disabled state of Field Management System or
- * the VEX Competition Switch, following either autonomous or opcontrol. When
- * the robot is enabled, this task will exit.
+ * @brief Runs when the field controller is in disabled mode. Don't run any
+ * 		  physical items here.
  */
 void disabled() {}
 
@@ -180,6 +224,8 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
+	ezChassis.pto_toggle({left_motor_A, left_motor_B, left_motor_C}, true);
+	ezChassis.pto_toggle({right_motor_A, right_motor_B, right_motor_C}, true);
 	roam.autoRoute();
 }
 

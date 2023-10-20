@@ -1,11 +1,5 @@
 #include "roborUtils.h"
-#include "main.h"
-#include "pros/motors.h"
-#include "pros/rtos.hpp"
-#include <iostream>
-#include <cstring>
-#include <cstdlib>
-#include <string>
+
 
 bool Controller_Out::busy = false;
 bool Controller_Out::block = false;

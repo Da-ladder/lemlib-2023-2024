@@ -4,6 +4,11 @@
 #include <string>
 #include <type_traits>
 #include<string>
+#include "pros/motors.h"
+#include "pros/rtos.hpp"
+#include <iostream>
+#include <cstring>
+#include <cstdlib>
 
 
 class Controller_Out {

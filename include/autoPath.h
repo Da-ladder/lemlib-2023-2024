@@ -1,5 +1,10 @@
-#include "lemlib/api.hpp"
 #pragma once
+#include "peerPursuitRouts.h"
+#include "pros/motors.hpp"
+#include "pros/rtos.hpp"
+#include "roborUtils.h"
+#include "main.h"
+#include "lemlib/api.hpp"
 #include "roborUtils.h"
 using namespace lemlib;
 

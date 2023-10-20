@@ -15,12 +15,14 @@
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::Controller devControl(pros::E_CONTROLLER_PARTNER);
 
+/*
 pros::Motor left_motor_A(16, pros::E_MOTOR_GEARSET_06, false); // port 16, blue, not reversed
 pros::Motor left_motor_B(18, pros::E_MOTOR_GEARSET_06, true); // port 18, blue, reversed
 pros::Motor left_motor_C(20, pros::E_MOTOR_GEARSET_06, true); // port 20, blue, reversed
 pros::Motor right_motor_A(11, pros::E_MOTOR_GEARSET_06, false); // port 11, blue, not reversed
 pros::Motor right_motor_B(14, pros::E_MOTOR_GEARSET_06, false); // port 14, blue, not reversed
 pros::Motor right_motor_C( 15, pros::E_MOTOR_GEARSET_06, true); // port 15, blue, reversed
+*/
 pros::Motor intake(17, pros::E_MOTOR_GEARSET_18, false);
 pros::Motor cata(19,pros::E_MOTOR_GEARSET_36, false);
 pros::Motor immigrant(0, pros::E_MOTOR_GEARSET_06, true); // Its taken over, hijacked
@@ -35,8 +37,7 @@ pros::Distance cataTrigger(8);
 
 pros::IMU inert(1);
 
-pros::MotorGroup left_side_motors({left_motor_A, left_motor_B, left_motor_C});
-pros::MotorGroup right_side_motors({right_motor_A, right_motor_B, right_motor_C});
+
 //*****************************************************************************************************************************
 
 // Sets up drive using EZ lib for swing movements
@@ -68,6 +69,19 @@ Drive ezChassis {
 };
 
 swingCtrl swing(&ezChassis);
+
+pros::Motor& left_motor_A = ezChassis.left_motors[0];
+pros::Motor& left_motor_B = ezChassis.left_motors[1];
+pros::Motor& left_motor_C = ezChassis.left_motors[2];
+pros::Motor& right_motor_A = ezChassis.right_motors[0];
+pros::Motor& right_motor_B = ezChassis.right_motors[1];
+pros::Motor& right_motor_C = ezChassis.right_motors[2];
+
+
+
+pros::MotorGroup left_side_motors({left_motor_A, left_motor_B, left_motor_C});
+pros::MotorGroup right_side_motors({right_motor_A, right_motor_B, right_motor_C});
+
 
 
 // Sets up the auto drivetrain
@@ -176,8 +190,15 @@ void cataUtil() {
 }
 
 void ptoEZChas(bool state) {
-	ezChassis.pto_toggle({left_motor_A, left_motor_B, left_motor_C}, state);
-	ezChassis.pto_toggle({right_motor_A, right_motor_B, right_motor_C}, state);
+	ezChassis.pto_toggle({ left_motor_A, left_motor_B}, true);
+	ezChassis.pto_toggle({right_motor_A, right_motor_B}, true);
+	ezChassis.pto_toggle({left_motor_C, right_motor_C}, true);
+	left_motor_A.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	left_motor_B.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	left_motor_C.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	right_motor_A.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	right_motor_B.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	right_motor_C.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 }
 
 /**
@@ -224,8 +245,6 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-	ezChassis.pto_toggle({left_motor_A, left_motor_B, left_motor_C}, true);
-	ezChassis.pto_toggle({right_motor_A, right_motor_B, right_motor_C}, true);
 	roam.autoRoute();
 }
 

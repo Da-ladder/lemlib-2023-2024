@@ -137,16 +137,6 @@ MotorUtils intakeThermo(45, &intake);
 Controller_Out controlOut(&master);
 Monitor temps(&controlOut, &chassisThermo, &cataThermo, &intakeThermo);
 
-// Sets up Automous path selector
-AutoSelecter path(&potentiometer);
-Routes roam(&chassis, &path, &intake, &cata, 
-			&left_side_motors, &right_side_motors, 
-			&rightWing, &leftWing, &swing);
-
-// Sets up the PID tuner on the developer controller (second controller)
-DevPidTune developerMode(&devControl, &lateralController, &angularController, 
-						 &roam, &chassis, &drivetrain, &sensors);
-
 // Sets up all piston uilities
 PistonControl controlLeftWing(&master, pros::E_CONTROLLER_DIGITAL_L2, &leftWing);
 PistonControl controlElevation(&devControl, pros::E_CONTROLLER_DIGITAL_L1, &primaryElevation);
@@ -154,12 +144,24 @@ PistonControl controlRightWing(&master, pros::E_CONTROLLER_DIGITAL_L1, &rightWin
 PistonControl auxControlElevate(&master, pros::E_CONTROLLER_DIGITAL_X, &auxElevation);
 
 // Sets up cata control using current to stop the motor at a designated angle
-CataControl controlCata(&master, pros::E_CONTROLLER_DIGITAL_A, &cata, 2100); //2280
+CataControl controlCata(&master, pros::E_CONTROLLER_DIGITAL_A, &cata, 2280); //2280
+
+// Sets up Automous path selector
+AutoSelecter path(&potentiometer);
+Routes roam(&chassis, &path, &intake, &controlCata, 
+			&left_side_motors, &right_side_motors, 
+			&rightWing, &leftWing, &swing, &auxElevation);
+
+
+// Sets up the PID tuner on the developer controller (second controller)
+DevPidTune developerMode(&devControl, &lateralController, &angularController, 
+						 &roam, &chassis, &drivetrain, &sensors);
+
 
 // A function that loops forever to check motor temperatures (used by a thread)
 void moniterStart(){
 	while (true) {
-		temps.checkTemps();
+		//temps.checkTemps();
 		pros::delay(500);
 	}
 }
@@ -190,9 +192,12 @@ void cataUtil() {
 }
 
 void ptoEZChas(bool state) {
-	ezChassis.pto_toggle({ left_motor_A, left_motor_B}, true);
-	ezChassis.pto_toggle({right_motor_A, right_motor_B}, true);
-	ezChassis.pto_toggle({left_motor_C, right_motor_C}, true);
+	ezChassis.pto_add({left_motor_B, left_motor_A});
+	ezChassis.pto_add({left_motor_A, left_motor_B});
+	ezChassis.pto_add({right_motor_A, right_motor_B});
+	ezChassis.pto_add({right_motor_B, right_motor_A});
+	ezChassis.pto_add({left_motor_C, right_motor_C});
+	ezChassis.pto_add({right_motor_C, left_motor_C});
 	left_motor_A.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	left_motor_B.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	left_motor_C.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
@@ -208,10 +213,10 @@ void initialize() {
 	pros::lcd::initialize();
 	chassis.calibrate();
 	master.clear();
-	chassisThermo.coast();
+	//chassisThermo.coast();
 	pros::delay(150);
-	devControl.clear();
-	pros::Task tempMonitor(moniterStart); //idk if this slows down anything???
+	//devControl.clear();
+	//pros::Task tempMonitor(moniterStart); //idk if this slows down anything???
 	pros::Task pistonControls(pistonUtils);
 	pros::Task cat(cataUtil);
 }
@@ -262,6 +267,7 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
+	std::vector<std::string> storagePoints {  };
 	bool cata_on = false;
 	bool dev_mode = true;
 	//autonomous();
@@ -336,8 +342,14 @@ void opcontrol() {
 		
 		if (dev_mode) {
 			developerMode.main();
+			lemlib::Pose pos = chassis.getPose(); // get the current position of the robot
+
+			//storagePoints.push_back(("drive ->angleTurnTo(%f, 1000);", pos.theta));
+			if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) { std::printf("drive ->angleTurnTo(%f, 1000);\n", pos.theta); }
+        	if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) { std::printf("drive ->moveTo(%f, %f, 1500);\n", pos.x, pos.y); }
+			//std::printf("drive ->angleTurnTo(%f, 1000);", pose.theta);
 		}
 
-		pros::delay(20);
+		pros::delay(30);
 	}
 }

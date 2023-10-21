@@ -199,6 +199,11 @@ class CataControl {
       }
     }
 
+    void overRideCataState(bool state) {
+      if (state) { OnOff = 1; } else { OnOff = 0; }
+      setCataState();
+    }
+
     void main() {
       if (controller->get_digital_new_press(button)) {
         if(OnOff == 1) {

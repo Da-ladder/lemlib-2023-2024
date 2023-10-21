@@ -6,6 +6,7 @@
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
 #include "autoPath.h"
+#include <cstdio>
 #include <memory>
 
 
@@ -202,6 +203,16 @@ class DevPidTune {
         //devControl->clear_line(2);
      }
 
+     inline void outTurnHeading() {
+        lemlib::Pose pose = chassis->getPose(); // get the current position of the robot
+        std::printf("drive ->angleTurnTo(%f, 1000);", pose.theta);
+     }
+
+     inline void outMoveToPos() {
+        lemlib::Pose pose = chassis->getPose(); // get the current position of the robot
+        std::printf("drive ->moveTo(%f, %f, 1500);", pose.x, pose.y);
+     }
+
      
 
      void main() {
@@ -211,13 +222,15 @@ class DevPidTune {
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) { decreaseIncrement(); }
         if (devControl ->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) { increaseIncrement(); }
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) { switchFwdTurn(); }
+        if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) { outTurnHeading(); }
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) { run(); }
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) { restPosition(); }
+        if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) { outMoveToPos(); }
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) { changeSetting(increment, fwdTurn); }
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) { changeSetting(-increment, fwdTurn); }
         //devControl->print(2, 1, "RES: %f", getResolution());
         //pros::delay(50);
-        display();
+        //display();
     }
 
 

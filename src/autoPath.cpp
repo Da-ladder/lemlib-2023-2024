@@ -44,55 +44,6 @@ void Routes::matchload() {
     manual_control(-40, 0);
     pros::delay(2000);
     manual_control(0, 0);
-    
-
-
-
-
-
-
-
-    /*
-    *intake = 127;
-    drive ->moveTo(1, y, 2000);
-    drive ->turnTo(-10, y, 700);
-    *intake = -127;
-    pros::delay(200);
-    *intake = 0;
-    drive ->moveTo(-10, y, 600); //shove into goal
-    
-    // score barrier triball
-    drive ->moveTo(2.69, y, 600);
-    drive->angleTurnTo(-268.16, 1200);
-    
-    *intake = 127;
-    drive ->moveTo(17.17, 55, 1000);
-    drive ->moveTo(15, 55, 800);
-    drive ->turnTo(0, 100, 200); // FORCES TURN
-    drive ->turnTo(-10.72, y, 1000);
-    *intake = -127;
-    pros::delay(200);
-    *intake = 0;
-    drive ->moveTo(-15.72, y, 1800); //-12.72
-
-    // get matchload??
-    
-    drive ->moveTo(0.32, y, 1000);
-    
-    drive ->angleTurnTo(-177.83, 1200);
-    drive ->moveTo(-1.53, 21.3, 2000, 85);
-    
-    drive ->angleTurnTo(-90.18, 1100);
-    
-    drive ->moveTo(14, 20.01, 2000, 80);
-    pros::delay(100);
-    rightWing ->set_value(true);
-    manual_control(-60, -30);
-    pros::delay(500);
-    manual_control(-60, 0);
-    pros::delay(500);
-    manual_control(0, 0);
-    */ 
 }
 
 void Routes::nomatchload() {
@@ -123,9 +74,8 @@ void Routes::nomatchload() {
     drive ->moveTo(-27.28, 33.58, 3000, 70);
     leftWing->set_value(true);
     *intake = 0;
-    manual_control(10, -50);
-    pros::delay(1300);
-    manual_control(0, 0);
+    manual_control(5, -40);
+    pros::delay(130000);
     
 
     
@@ -151,10 +101,11 @@ void Routes::skills() {
     manual_control(0, 0);
 
     cata->overRideCataState(true);
-    //pros::delay(2000); //27 secs
+    pros::delay(29000); //27 secs
     cata->overRideCataState(false);
     elvate->set_value(LOW);
 
+    /*
     drive ->angleTurnTo(24.473568, 300);
     drive ->moveTo(-2.452747, -3.902936, 1000);
     drive ->angleTurnTo(1.912794, 400);
@@ -165,6 +116,7 @@ void Routes::skills() {
     drive ->moveTo(10.264065, -87.865616, 600);
     leftWing->set_value(false);
     rightWing->set_value(false);
+    */
 
     /*
     drive ->moveTo(22.462017, -95.127281, 1000);
@@ -206,7 +158,7 @@ void Routes::skills() {
 }
 
 void Routes::placehold1() {
-    // STARTS with ALLIANCE TRIBALL and scores it in opp. goal and gets matchload out
+    // STARTS with ALLIANCE TRIBALL and scores it in opp. goal and gets matchload out touches the bar as well
     drive->moveTo(-0.74, -23.66, 1000);
     *intake = 127;
     drive->angleTurnTo(37.01, 800);

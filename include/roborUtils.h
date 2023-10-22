@@ -181,18 +181,22 @@ class CataControl {
     int OnOff = 0;
     pros::controller_digital_e_t button;
     pros::Motor* cata;
+    PistonControl* elevate;
   
   public:
-    CataControl(pros::Controller* control, pros::controller_digital_e_t digitalPress, pros::Motor* cat, int stopCurrent) {
+    CataControl(pros::Controller* control, pros::controller_digital_e_t digitalPress, pros::Motor* cat, int stopCurrent, PistonControl* ele) {
       controller = control;
       stopAmp = stopCurrent;
       button = digitalPress;
       cata = cat;
+      elevate = ele;
     }
     void setCataState() {
       if (OnOff) {
+        elevate->overrideState(1);
         *cata = 127;
       } else if (!OnOff && cata->get_current_draw() > 100) {
+        elevate->overrideState(0);
         if (cata->get_current_draw() > stopAmp) {
           *cata = 0;
         }

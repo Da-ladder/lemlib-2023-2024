@@ -144,7 +144,7 @@ PistonControl controlRightWing(&master, pros::E_CONTROLLER_DIGITAL_L1, &rightWin
 PistonControl auxControlElevate(&master, pros::E_CONTROLLER_DIGITAL_X, &auxElevation);
 
 // Sets up cata control using current to stop the motor at a designated angle
-CataControl controlCata(&master, pros::E_CONTROLLER_DIGITAL_A, &cata, 2280); //2280
+CataControl controlCata(&master, pros::E_CONTROLLER_DIGITAL_A, &cata, 2020, &auxControlElevate); //2280
 
 // Sets up Automous path selector
 AutoSelecter path(&potentiometer);
@@ -343,13 +343,13 @@ void opcontrol() {
 		if (dev_mode) {
 			developerMode.main();
 			lemlib::Pose pos = chassis.getPose(); // get the current position of the robot
-
 			//storagePoints.push_back(("drive ->angleTurnTo(%f, 1000);", pos.theta));
-			if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) { std::printf("drive ->angleTurnTo(%f, 1000);\n", pos.theta); }
-        	if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) { std::printf("drive ->moveTo(%f, %f, 1500);\n", pos.x, pos.y); }
+			//if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) { std::printf("drive ->angleTurnTo(%f, 1000);\n", pos.theta); }
+        	//if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) { std::printf("drive ->moveTo(%f, %f, 1500);\n", pos.x, pos.y); }
+			if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) { std::printf("\"%f, %f, %f\", ", pos.x, pos.y, pos.theta); }
 			//std::printf("drive ->angleTurnTo(%f, 1000);", pose.theta);
 		}
 
-		pros::delay(30);
+		pros::delay(20); //should be 20
 	}
 }

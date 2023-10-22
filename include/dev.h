@@ -27,7 +27,9 @@ class DevPidTune {
      static double increment;
      enum LatTurn {FWD, TURN};
      static LatTurn fwdTurn;
-     DevPidTune(pros::Controller* dev, lemlib::ChassisController_t* foward, lemlib::ChassisController_t* turning, Routes* route, lemlib::Chassis* controlchassis, lemlib::Drivetrain_t* drive, lemlib::OdomSensors_t* sensor){
+     DevPidTune(pros::Controller* dev, lemlib::ChassisController_t* foward, lemlib::ChassisController_t* turning, 
+                Routes* route, lemlib::Chassis* controlchassis, lemlib::Drivetrain_t* drive, 
+                lemlib::OdomSensors_t* sensor){
         devControl = dev;
         fwd = foward;
         turn = turning;

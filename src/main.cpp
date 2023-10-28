@@ -5,7 +5,7 @@
 
 
 //*****************************************************************************************************************************
-/**
+/** hehe
  * @brief initializes all motors, pistons, controllers, and sensors on the bot
 */
 pros::Controller master(pros::E_CONTROLLER_MASTER);

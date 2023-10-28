@@ -1,11 +1,7 @@
-#include "lemlib/api.hpp"
 #include "main.h"
-#include "autoPath.h"
 #include "roborUtils.h"
+#include "autoPath.h"
 #include "dev.h"
-#include <cstdio>
-
-
 
 
 //*****************************************************************************************************************************
@@ -15,14 +11,6 @@
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::Controller devControl(pros::E_CONTROLLER_PARTNER);
 
-/*
-pros::Motor left_motor_A(16, pros::E_MOTOR_GEARSET_06, false); // port 16, blue, not reversed
-pros::Motor left_motor_B(18, pros::E_MOTOR_GEARSET_06, true); // port 18, blue, reversed
-pros::Motor left_motor_C(20, pros::E_MOTOR_GEARSET_06, true); // port 20, blue, reversed
-pros::Motor right_motor_A(11, pros::E_MOTOR_GEARSET_06, false); // port 11, blue, not reversed
-pros::Motor right_motor_B(14, pros::E_MOTOR_GEARSET_06, false); // port 14, blue, not reversed
-pros::Motor right_motor_C( 15, pros::E_MOTOR_GEARSET_06, true); // port 15, blue, reversed
-*/
 pros::Motor intake(17, pros::E_MOTOR_GEARSET_18, false);
 pros::Motor cata(19,pros::E_MOTOR_GEARSET_36, false);
 pros::Motor immigrant(0, pros::E_MOTOR_GEARSET_06, true); // Its taken over, hijacked
@@ -33,7 +21,6 @@ pros::ADIDigitalOut auxElevation('e', LOW); // LINK
 pros::ADIDigitalOut rightWing('h', LOW);
 
 pros::ADIPotentiometer potentiometer ('g',pros::adi_potentiometer_type_e::E_ADI_POT_EDR);
-pros::Distance cataTrigger(8);
 
 pros::IMU inert(1);
 
@@ -139,6 +126,7 @@ Monitor temps(&controlOut, &chassisThermo, &cataThermo, &intakeThermo);
 
 // Sets up all piston uilities
 PistonControl controlLeftWing(&master, pros::E_CONTROLLER_DIGITAL_L2, &leftWing);
+extern PistonControl controlLeftWing;
 PistonControl controlElevation(&devControl, pros::E_CONTROLLER_DIGITAL_L1, &primaryElevation);
 PistonControl controlRightWing(&master, pros::E_CONTROLLER_DIGITAL_L1, &rightWing);
 PistonControl auxControlElevate(&master, pros::E_CONTROLLER_DIGITAL_X, &auxElevation);
@@ -157,6 +145,9 @@ Routes roam(&chassis, &path, &intake, &controlCata,
 DevPidTune developerMode(&devControl, &lateralController, &angularController, 
 						 &roam, &chassis, &drivetrain, &sensors);
 
+
+//	void (*fp)(void) = &roam.placehold1();
+//        AutoCreater devtest("sewiweo", (*fp));
 
 // A function that loops forever to check motor temperatures (used by a thread)
 void moniterStart(){

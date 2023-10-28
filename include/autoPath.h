@@ -37,6 +37,8 @@ class Routes{
         leftWing = lwings;
         ezchas = ezchass;
         elvate = elevate;
+
+        
      }
      void initDrive(lemlib::Chassis* drivetrain);
      void matchload();
@@ -52,5 +54,22 @@ class Routes{
       *left = l;
       *right = r;
      }
+    
+    /*
+     inline void initall() {
+        void (*fp)(void) = &this->placehold1;
+        AutoCreater devtest("sewiweo", (*fp));
+     }
+    */
      
+};
+
+struct paths{
+
+    void placehold1() {
+    
+
+    }
+    
+
 };

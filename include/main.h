@@ -41,7 +41,12 @@
  */
 //#include "okapi/api.hpp"
 //#include "pros/api_legacy.h"
+#pragma once
 #include "EZ-Template/api.hpp"
+#include "lemlib/api.hpp"
+
+#include <cstdio>
+#include <string>
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
  * Motor, you can use the namespace with the following commented out line.
@@ -68,6 +73,34 @@ void initialize(void);
 void disabled(void);
 void competition_initialize(void);
 void opcontrol(void);
+extern pros::Motor cata;
+extern pros::Motor intake;
+
+extern pros::ADIDigitalOut leftWing;
+extern pros::ADIDigitalOut primaryElevation;
+extern pros::ADIDigitalOut auxElevation;
+extern pros::ADIDigitalOut rightWing;
+
+
+
+extern pros::ADIPotentiometer potentiometer;
+extern Drive ezChassis;
+
+extern pros::Motor& left_motor_A;
+extern pros::Motor& left_motor_B;
+extern pros::Motor& left_motor_C;
+extern pros::Motor& right_motor_A;
+extern pros::Motor& right_motor_B;
+extern pros::Motor& right_motor_C;
+
+extern pros::MotorGroup left_side_motors;
+extern pros::MotorGroup right_side_motors;
+
+extern lemlib::Chassis chassis;
+
+//extern CataControl controlCata;
+//extern AutoSelecter path;
+//extern Routes roam;
 #ifdef __cplusplus
 }
 #endif

@@ -1,5 +1,6 @@
 #pragma once
 #include "main.h"
+#include <functional>
 #include <streambuf>
 #include <string>
 #include <type_traits>
@@ -9,7 +10,9 @@
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
+#include <vector>
 
+//TEST
 
 class Controller_Out {
   private:
@@ -236,4 +239,36 @@ class swingCtrl {
     inline void leftSwing(double angle, int speed) {
       echassis->set_swing_pid(e_swing::LEFT_SWING, angle, speed);
     }
+};
+
+
+class AutoCreater {
+  private:
+    std::vector<std::string> routeNames = {};
+    std::list<void(*)> runRoutes;
+    int indexToRun = 0;
+
+    int function(int x, int y);
+    
+
+  
+  public:
+    AutoCreater(const char *routeName, void routeCall()) {
+      routeNames.push_back(std::string(routeName));
+      runRoutes.push_back(&routeCall);
+      
+      
+    }
+
+    inline void run() {
+      if (indexToRun >= 0 && indexToRun < runRoutes.size()) {
+        auto it = runRoutes.begin(); // The iterator to use
+        std::advance(it, indexToRun); // Move the iterator to the desired function
+        (*it); // Calls the function
+    } else {
+        std::cout << "Index out of bounds." << std::endl;
+    }
+
+    }
+    
 };

@@ -1,17 +1,18 @@
 #pragma once
-#include "main.h"
+#include "api.h"
 #include <functional>
+#include <list>
 #include <streambuf>
 #include <string>
 #include <type_traits>
-#include<string>
+#include <string>
 #include "pros/motors.h"
 #include "pros/rtos.hpp"
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
 #include <vector>
-
+ 
 //TEST
 
 class Controller_Out {
@@ -223,24 +224,6 @@ class CataControl {
     }
 };
 
-class swingCtrl {
-  private:
-    Drive *echassis;
-
-  public:
-    swingCtrl(Drive *chassis) {
-      echassis = chassis;
-    }
-
-    inline void rightSwing(double angle, int speed) {
-      echassis->set_swing_pid(e_swing::RIGHT_SWING, angle, speed);
-    }
-
-    inline void leftSwing(double angle, int speed) {
-      echassis->set_swing_pid(e_swing::LEFT_SWING, angle, speed);
-    }
-};
-
 
 class AutoCreater {
   private:
@@ -256,9 +239,9 @@ class AutoCreater {
     AutoCreater(const char *routeName, void routeCall()) {
       routeNames.push_back(std::string(routeName));
       runRoutes.push_back(&routeCall);
-      
-      
     }
+
+    
 
     inline void run() {
       if (indexToRun >= 0 && indexToRun < runRoutes.size()) {

@@ -44,6 +44,8 @@
 #pragma once
 #include "EZ-Template/api.hpp"
 #include "lemlib/api.hpp"
+#include "roborUtils.h"
+
 
 #include <cstdio>
 #include <string>
@@ -96,10 +98,19 @@ extern pros::Motor& right_motor_C;
 extern pros::MotorGroup left_side_motors;
 extern pros::MotorGroup right_side_motors;
 
+
+extern PistonControl controlLeftWing;
+extern PistonControl controlElevation;
+extern PistonControl controlRightWing;
+extern PistonControl auxControlElevate;
+
+extern pros::MotorGroup left_side_motors;
+extern pros::MotorGroup right_side_motors;
+
 extern lemlib::Chassis chassis;
 
-//extern CataControl controlCata;
-//extern AutoSelecter path;
+extern CataControl controlCata;
+extern AutoSelecter path;
 //extern Routes roam;
 #ifdef __cplusplus
 }

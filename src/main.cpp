@@ -1,5 +1,4 @@
 #include "main.h"
-#include "roborUtils.h"
 #include "autoPath.h"
 #include "dev.h"
 
@@ -55,7 +54,7 @@ Drive ezChassis {
   ,2.333
 };
 
-swingCtrl swing(&ezChassis);
+//swingCtrl swing(&ezChassis);
 
 pros::Motor& left_motor_A = ezChassis.left_motors[0];
 pros::Motor& left_motor_B = ezChassis.left_motors[1];
@@ -126,7 +125,6 @@ Monitor temps(&controlOut, &chassisThermo, &cataThermo, &intakeThermo);
 
 // Sets up all piston uilities
 PistonControl controlLeftWing(&master, pros::E_CONTROLLER_DIGITAL_L2, &leftWing);
-extern PistonControl controlLeftWing;
 PistonControl controlElevation(&devControl, pros::E_CONTROLLER_DIGITAL_L1, &primaryElevation);
 PistonControl controlRightWing(&master, pros::E_CONTROLLER_DIGITAL_L1, &rightWing);
 PistonControl auxControlElevate(&master, pros::E_CONTROLLER_DIGITAL_X, &auxElevation);
@@ -136,9 +134,7 @@ CataControl controlCata(&master, pros::E_CONTROLLER_DIGITAL_A, &cata, 2020, &aux
 
 // Sets up Automous path selector
 AutoSelecter path(&potentiometer);
-Routes roam(&chassis, &path, &intake, &controlCata, 
-			&left_side_motors, &right_side_motors, 
-			&rightWing, &leftWing, &swing, &auxElevation);
+Routes roam(&chassis, &path);
 
 
 // Sets up the PID tuner on the developer controller (second controller)
@@ -261,6 +257,7 @@ void opcontrol() {
 	std::vector<std::string> storagePoints {  };
 	bool cata_on = false;
 	bool dev_mode = true;
+	int times = 0;
 	//autonomous();
 	
 	while (true) {
@@ -300,7 +297,7 @@ void opcontrol() {
 				pros::lcd::print(3, "None");
 		}
 		
-		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) { roam.autoRoute(); }
+		//if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) { roam.autoRoute(); }
 
 			
 		
@@ -333,14 +330,23 @@ void opcontrol() {
 		
 		if (dev_mode) {
 			developerMode.main();
-			lemlib::Pose pos = chassis.getPose(); // get the current position of the robot
 			//storagePoints.push_back(("drive ->angleTurnTo(%f, 1000);", pos.theta));
 			//if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) { std::printf("drive ->angleTurnTo(%f, 1000);\n", pos.theta); }
         	//if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) { std::printf("drive ->moveTo(%f, %f, 1500);\n", pos.x, pos.y); }
-			if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) { std::printf("\"%f, %f, %f\", ", pos.x, pos.y, pos.theta); }
+			if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) { 
+				lemlib::Pose pos = chassis.getPose(); // get the current position of the robot
+				std::printf("\"%f, %f, %f\", ", pos.x, pos.y, pos.theta); 
+				if (times == 4) {
+				std::printf("\n");
+				times = 0;
+				}
+				times++;
+				}
+			
 			//std::printf("drive ->angleTurnTo(%f, 1000);", pose.theta);
 		}
 
-		pros::delay(20); //should be 20
+		
+		pros::delay(75); //should be 20
 	}
 }

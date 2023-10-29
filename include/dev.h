@@ -37,7 +37,6 @@ class DevPidTune {
         chassis = controlchassis;
         drivetrain = drive;
         sensors = sensor;
-
      }
      inline void changeKp(double num, LatTurn setting) {
         if (setting == FWD) {

@@ -183,18 +183,10 @@ void Routes::placehold1() {
     chassis.moveTo(-1.31, -7.83, 1000);
     controlRightWing.overrideState(0);
     
-
-    //intakeree = 127;
     chassis.moveTo(0.35, 2.22, 1000);
     chassis.angleTurnTo(140, 800);
-    //chassis.moveTo(6.22, -13.34, 2000);
     chassis.moveTo(-24.53, 25.42, 2000, 40);
-    controlLeftWing.overrideState(1);
-    //chassis.angleTurnTo(-335.63, 800);
-    //intake = -127;
-    //chassis.moveTo(17.18, 20.48, 2000);
-    //intake = 0;
-    
+    controlLeftWing.overrideState(1); 
 }
 
 void Routes::placehold2() {
@@ -238,6 +230,7 @@ void Routes::placehold2() {
 }
 
 void Routes::placehold3() {
+    //far side safe
     intake = 127;
     chassis.moveTo(-0.160420, 29.762564, 1000, 80);
     pros::delay(200);
@@ -256,22 +249,13 @@ void Routes::placehold3() {
     chassis.moveTo(14.494976, -16.681007, 1000);
     chassis.angleTurnTo(-81.444534, 1000);
     chassis.moveTo(27.814409, -19.599689, 1000);
-    chassis.moveTo(20.701077, -19.377268, 1000, 80);
+    chassis.moveTo(15.701077, -19.377268, 1000, 80);
     chassis.moveTo(27.838827, -19.613266, 1000);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    chassis.moveTo(20.55, -20, 1000);
+    chassis.angleTurnTo(-40.26, 1000);
+    chassis.moveTo(0.65, 3.48, 1000);
+    chassis.angleTurnTo(-2.38, 1000);
+    chassis.moveTo(-0.82, 31.43, 1000);
 }
 
 void Routes::placehold4() {
@@ -290,6 +274,8 @@ void Routes::placehold5() {
  * @result      No return but runs autos
 */
 void Routes::autoRoute() {
+    //void (*fp)(void) = &roam.placehold1();
+    //AutoCreater devtest("sewiweo", (*fp));
 
     switch (path->checkPath()) {
         case AutoSelecter::MATCHLOAD:

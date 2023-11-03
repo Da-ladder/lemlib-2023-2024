@@ -98,7 +98,8 @@ extern pros::Motor& right_motor_C;
 extern pros::MotorGroup left_side_motors;
 extern pros::MotorGroup right_side_motors;
 
-
+extern PistonControl blocker;
+extern PistonControl matchContact;
 extern PistonControl controlLeftWing;
 extern PistonControl controlElevation;
 extern PistonControl controlRightWing;
@@ -111,6 +112,7 @@ extern lemlib::Chassis chassis;
 
 extern CataControl controlCata;
 extern AutoSelecter path;
+extern pros::ADIPotentiometer potentiometer;
 //extern Routes roam;
 #ifdef __cplusplus
 }

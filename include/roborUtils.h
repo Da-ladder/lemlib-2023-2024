@@ -186,21 +186,25 @@ class CataControl {
     pros::controller_digital_e_t button;
     pros::Motor* cata;
     PistonControl* elevate;
+    PistonControl* matchLoadTouch;
   
   public:
-    CataControl(pros::Controller* control, pros::controller_digital_e_t digitalPress, pros::Motor* cat, int stopCurrent, PistonControl* ele) {
+    CataControl(pros::Controller* control, pros::controller_digital_e_t digitalPress, pros::Motor* cat, int stopCurrent, PistonControl* ele, PistonControl* match) {
       controller = control;
       stopAmp = stopCurrent;
       button = digitalPress;
       cata = cat;
       elevate = ele;
+      matchLoadTouch = match;
     }
     void setCataState() {
       if (OnOff) {
         elevate->overrideState(1);
+        matchLoadTouch->overrideState(1);
         *cata = 127;
       } else if (!OnOff && cata->get_current_draw() > 100) {
         elevate->overrideState(0);
+        matchLoadTouch->overrideState(0);
         if (cata->get_current_draw() > stopAmp) {
           *cata = 0;
         }
@@ -222,36 +226,4 @@ class CataControl {
       }
       setCataState();
     }
-};
-
-
-class AutoCreater {
-  private:
-    std::vector<std::string> routeNames = {};
-    std::list<void(*)> runRoutes;
-    int indexToRun = 0;
-
-    int function(int x, int y);
-    
-
-  
-  public:
-    AutoCreater(const char *routeName, void routeCall()) {
-      routeNames.push_back(std::string(routeName));
-      runRoutes.push_back(&routeCall);
-    }
-
-    
-
-    inline void run() {
-      if (indexToRun >= 0 && indexToRun < runRoutes.size()) {
-        auto it = runRoutes.begin(); // The iterator to use
-        std::advance(it, indexToRun); // Move the iterator to the desired function
-        (*it); // Calls the function
-    } else {
-        std::cout << "Index out of bounds." << std::endl;
-    }
-
-    }
-    
 };

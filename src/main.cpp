@@ -18,8 +18,13 @@ pros::ADIDigitalOut leftWing('d', LOW);
 pros::ADIDigitalOut primaryElevation('f', HIGH); // LINK
 pros::ADIDigitalOut auxElevation('e', LOW); // LINK
 pros::ADIDigitalOut rightWing('h', LOW);
+pros::ADIDigitalOut block('c', LOW);
+pros::ADIDigitalOut matchloadWing('b', LOW);
+
+//pros::ADIDigitalOut blocker('h', LOW);
 
 pros::ADIPotentiometer potentiometer ('g',pros::adi_potentiometer_type_e::E_ADI_POT_EDR);
+pros::ADIPotentiometer fake ('a',pros::adi_potentiometer_type_e::E_ADI_POT_EDR);
 
 pros::IMU inert(1);
 
@@ -67,6 +72,8 @@ pros::Motor& right_motor_C = ezChassis.right_motors[2];
 
 pros::MotorGroup left_side_motors({left_motor_A, left_motor_B, left_motor_C});
 pros::MotorGroup right_side_motors({right_motor_A, right_motor_B, right_motor_C});
+
+
 
 
 
@@ -124,13 +131,17 @@ Controller_Out controlOut(&master);
 Monitor temps(&controlOut, &chassisThermo, &cataThermo, &intakeThermo);
 
 // Sets up all piston uilities
+//PistonControl blocker(&master, pros::E_CONTROLLER_DIGITAL_L2, );
+PistonControl blocker(&master, pros::E_CONTROLLER_DIGITAL_B, &block);
+PistonControl matchContact(&master, pros::E_CONTROLLER_DIGITAL_Y, &matchloadWing);
 PistonControl controlLeftWing(&master, pros::E_CONTROLLER_DIGITAL_L2, &leftWing);
 PistonControl controlElevation(&devControl, pros::E_CONTROLLER_DIGITAL_L1, &primaryElevation);
 PistonControl controlRightWing(&master, pros::E_CONTROLLER_DIGITAL_L1, &rightWing);
 PistonControl auxControlElevate(&master, pros::E_CONTROLLER_DIGITAL_X, &auxElevation);
 
 // Sets up cata control using current to stop the motor at a designated angle
-CataControl controlCata(&master, pros::E_CONTROLLER_DIGITAL_A, &cata, 2020, &auxControlElevate); //2280
+CataControl controlCata(&master, pros::E_CONTROLLER_DIGITAL_A, &cata, 2020,
+						&auxControlElevate, &matchContact); //2280
 
 // Sets up Automous path selector
 AutoSelecter path(&potentiometer);
@@ -140,10 +151,6 @@ Routes roam(&chassis, &path);
 // Sets up the PID tuner on the developer controller (second controller)
 DevPidTune developerMode(&devControl, &lateralController, &angularController, 
 						 &roam, &chassis, &drivetrain, &sensors);
-
-
-//	void (*fp)(void) = &roam.placehold1();
-//        AutoCreater devtest("sewiweo", (*fp));
 
 // A function that loops forever to check motor temperatures (used by a thread)
 void moniterStart(){
@@ -159,6 +166,8 @@ void moniterStart(){
 void pistonUtils(){
 	while (true) {
 		controlLeftWing.main();
+		blocker.main();
+		matchContact.main();
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) && 
 			master.get_digital(pros::E_CONTROLLER_DIGITAL_X)) {
 			controlElevation.overrideState(0);
@@ -206,6 +215,8 @@ void initialize() {
 	//pros::Task tempMonitor(moniterStart); //idk if this slows down anything???
 	pros::Task pistonControls(pistonUtils);
 	pros::Task cat(cataUtil);
+	roam.initall();
+
 }
 
 /**
@@ -259,14 +270,21 @@ void opcontrol() {
 	bool dev_mode = true;
 	int times = 0;
 	//autonomous();
+	roam.initall();
+	//potentiometer.calibrate();
+	//pros::delay(2000);
 	
 	while (true) {
 		lemlib::Pose pose = chassis.getPose(); // get the current position of the robot
         pros::lcd::print(0, "x: %f", pose.x); // print the x position
         pros::lcd::print(1, "y: %f", pose.y); // print the y position
         pros::lcd::print(2, "heading: %f", pose.theta); // print the heading
+		//pros::lcd::print(4, roam.returnPathTest());
+		//pros::lcd::print(5, "VALUE: %d", roam.getNUM());
+		//roam.updates();
 
 		//Efficent+
+		
 		
 		switch (path.checkPath()) {
 			case AutoSelecter::MATCHLOAD:
@@ -296,6 +314,9 @@ void opcontrol() {
 			default:
 				pros::lcd::print(3, "None");
 		}
+		
+		
+		
 		
 		//if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) { roam.autoRoute(); }
 
@@ -333,15 +354,15 @@ void opcontrol() {
 			//storagePoints.push_back(("drive ->angleTurnTo(%f, 1000);", pos.theta));
 			//if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) { std::printf("drive ->angleTurnTo(%f, 1000);\n", pos.theta); }
         	//if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) { std::printf("drive ->moveTo(%f, %f, 1500);\n", pos.x, pos.y); }
-			if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) { 
-				lemlib::Pose pos = chassis.getPose(); // get the current position of the robot
-				std::printf("\"%f, %f, %f\", ", pos.x, pos.y, pos.theta); 
-				if (times == 4) {
-				std::printf("\n");
-				times = 0;
-				}
-				times++;
-				}
+			//if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) { 
+			//	lemlib::Pose pos = chassis.getPose(); // get the current position of the robot
+				//std::printf("\"%f, %f, %f\", ", pos.x, pos.y, pos.theta); 
+				//if (times == 4) {
+				//std::printf("\n");
+				//times = 0;
+				//}
+				//times++;
+				//}
 			
 			//std::printf("drive ->angleTurnTo(%f, 1000);", pose.theta);
 		}

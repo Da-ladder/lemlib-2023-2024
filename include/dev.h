@@ -223,10 +223,10 @@ class DevPidTune {
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) { decreaseIncrement(); }
         if (devControl ->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) { increaseIncrement(); }
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) { switchFwdTurn(); }
-        if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) { outTurnHeading(); }
+        if (devControl->get_digital(pros::E_CONTROLLER_DIGITAL_L2)) { outTurnHeading(); }
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) { run(); }
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) { restPosition(); }
-        if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y)) { outMoveToPos(); }
+        if (devControl->get_digital(pros::E_CONTROLLER_DIGITAL_Y)) { outMoveToPos(); }
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) { changeSetting(increment, fwdTurn); }
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) { changeSetting(-increment, fwdTurn); }
         //devControl->print(2, 1, "RES: %f", getResolution());

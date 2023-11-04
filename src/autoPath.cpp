@@ -282,30 +282,34 @@ void Routes::placehold2() {
     */
     //ALLIANCE TRIBALL
     intake = 127;
-    pros::delay(500);
-    intake = 0;
+    //pros::delay(500);
     
-    chassis.moveTo(1.38, 40.01, 1000);
+    
+    chassis.moveTo(1.38, 40.01, 1100);
+    intake = 0;
     chassis.angleTurnTo(75.08, 700);
     intake = outtakePower;
     pros::delay(150);
     
     chassis.angleTurnTo(10.85, 700);
     
+    
     // SECOND TRIBALL
     intake = 127;
-    chassis.moveTo(-3.22, 53.02, 900);
+    //chassis.moveTo(-3.22, 53.02, 900);
+    chassis.moveTo(0.92, 52.23, 900);
     pros::delay(150);
     intake = 0;
     chassis.angleTurnTo(99.88, 700);
     intake = outtakePower;
     pros::delay(150);
     intake = 0;
-    chassis.angleTurnTo(247.06, 1000);
+    chassis.angleTurnTo(247.06, 900);
+    
     
     // THIRD TRIBALL
     intake = 127;
-    chassis.moveTo(-15.66, 48.41, 800, 80);
+    chassis.moveTo(-8.04, 50.88, 800, 80);
     pros::delay(150);
     intake = 0;
     
@@ -314,12 +318,11 @@ void Routes::placehold2() {
     intake = outtakePower;
     pros::delay(150);
     intake = 0;
-    chassis.angleTurnTo(376.37, 800);
-    
+    chassis.angleTurnTo(20.29, 800);
     
 
     intake = 127;
-    chassis.moveTo(7.08, 69.53, 1000);
+    chassis.moveTo(7.34, 65.36, 900); //1000
     chassis.angleTurnTo(-67.19, 800);
     chassis.moveTo(-1.03, 74.25, 800);
     pros::delay(150);
@@ -340,6 +343,7 @@ void Routes::placehold2() {
     controlLeftWing.overrideState(1);
     controlRightWing.overrideState(1);
     chassis.moveTo(25, 63.12, 1200);
+    
     
 
     /*

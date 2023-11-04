@@ -288,7 +288,7 @@ void Routes::placehold2() {
     chassis.moveTo(1.38, 40.01, 1100);
     intake = 0;
     chassis.angleTurnTo(75.08, 700);
-    intake = outtakePower;
+    intake = -97;
     pros::delay(150);
     
     chassis.angleTurnTo(10.85, 700);
@@ -297,7 +297,7 @@ void Routes::placehold2() {
     // SECOND TRIBALL
     intake = 127;
     //chassis.moveTo(-3.22, 53.02, 900);
-    chassis.moveTo(0.92, 52.23, 900);
+    chassis.moveTo(0.92, 52.23, 700);
     pros::delay(150);
     intake = 0;
     chassis.angleTurnTo(99.88, 700);
@@ -309,7 +309,7 @@ void Routes::placehold2() {
     
     // THIRD TRIBALL
     intake = 127;
-    chassis.moveTo(-8.04, 50.88, 800, 80);
+    chassis.moveTo(-8.04, 50.88, 600, 80); //800
     pros::delay(150);
     intake = 0;
     
@@ -322,9 +322,10 @@ void Routes::placehold2() {
     
 
     intake = 127;
-    chassis.moveTo(7.34, 65.36, 900); //1000
+    chassis.moveTo(7.34, 65.36, 800); //1000
     chassis.angleTurnTo(-67.19, 800);
-    chassis.moveTo(-1.03, 74.25, 800);
+    
+    chassis.moveTo(0.48, 67.55, 800);
     pros::delay(150);
     intake = 0;
     
@@ -345,16 +346,6 @@ void Routes::placehold2() {
     chassis.moveTo(25, 63.12, 1200);
     
     
-
-    /*
-    chassis.moveTo(5.19, 71.75, 1000);
-    chassis.angleTurnTo(108.93, 1000);
-    intake = -127;
-    pros::delay(150);
-    chassis.moveTo(2.94, 73.91, 1000);
-    chassis.angleTurnTo(287.88, 1000);
-    chassis.moveTo(24.85, 66.23, 1000);
-    */
     
     
     

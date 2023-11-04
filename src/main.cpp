@@ -266,11 +266,11 @@ void autonomous() {
  */
 void opcontrol() {
 	std::vector<std::string> storagePoints {  };
-	bool cata_on = false;
-	bool dev_mode = true;
+
+	bool dev_mode = false;
 	int times = 0;
 	//autonomous();
-	roam.initall();
+	//roam.initall();
 	//potentiometer.calibrate();
 	//pros::delay(2000);
 	
@@ -321,12 +321,13 @@ void opcontrol() {
 		//if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) { roam.autoRoute(); }
 
 			
-		
+		/*
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) 
 		{ controlOut.silence(); }
 
 		else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) 
 		{ controlOut.unsilence(); }
+		*/
 
 		//std::cout << "wwll well well" << std::endl; ???
 
@@ -368,6 +369,6 @@ void opcontrol() {
 		}
 
 		
-		pros::delay(75); //should be 20
+		pros::delay(20); //should be 20
 	}
 }

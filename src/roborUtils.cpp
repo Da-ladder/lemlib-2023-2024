@@ -5,6 +5,7 @@ bool Controller_Out::busy = false;
 bool Controller_Out::block = false;
 int Controller_Out::msg_sent = 0;
 
+int CataControl::reqTurnOff = 0;
 
 bool Controller_Out::msg(int line, const char *MSG) {
     if (block) { return false; }

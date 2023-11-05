@@ -187,6 +187,7 @@ class CataControl {
     pros::Motor* cata;
     PistonControl* elevate;
     PistonControl* matchLoadTouch;
+    static int reqTurnOff;
   
   public:
     CataControl(pros::Controller* control, pros::controller_digital_e_t digitalPress, pros::Motor* cat, int stopCurrent, PistonControl* ele, PistonControl* match) {
@@ -199,16 +200,28 @@ class CataControl {
     }
     void setCataState() {
       if (OnOff) {
-        elevate->overrideState(1);
-        matchLoadTouch->overrideState(1);
+        if (reqTurnOff == 1) {
+          elevate->overrideState(1);
+          matchLoadTouch->overrideState(1);
+          reqTurnOff = 0;
+        }
         *cata = 127;
-      } else if (!OnOff && cata->get_current_draw() > 100) {
+      } else {
+        if (reqTurnOff == 1) {
+          *cata = 0;
+          elevate->overrideState(0);
+          matchLoadTouch->overrideState(0);
+          reqTurnOff = 0;
+        }
+        
+      }
+      /*else if (!OnOff && cata->get_current_draw() > 100) {
         elevate->overrideState(0);
         matchLoadTouch->overrideState(0);
         if (cata->get_current_draw() > stopAmp) {
           *cata = 0;
         }
-      }
+      } */
     }
 
     void overRideCataState(bool state) {
@@ -220,8 +233,10 @@ class CataControl {
       if (controller->get_digital_new_press(button)) {
         if(OnOff == 1) {
           this->OnOff = 0;
+          reqTurnOff = 1;
         } else if (OnOff == 0) {
           this->OnOff = 1;
+          reqTurnOff = 1;
         }
       }
       setCataState();

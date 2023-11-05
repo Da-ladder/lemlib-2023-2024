@@ -124,11 +124,13 @@ lemlib::Chassis chassis(drivetrain, lateralController, angularController, sensor
 
 
 // Sets up OverTemp notifications along with Controller push notifications
+/*
 MotorUtils chassisThermo(50, &left_side_motors, &right_side_motors);
 MotorUtils cataThermo(45, &cata);
 MotorUtils intakeThermo(45, &intake);
 Controller_Out controlOut(&master);
 Monitor temps(&controlOut, &chassisThermo, &cataThermo, &intakeThermo);
+*/
 
 // Sets up all piston uilities
 //PistonControl blocker(&master, pros::E_CONTROLLER_DIGITAL_L2, );
@@ -140,7 +142,7 @@ PistonControl controlRightWing(&master, pros::E_CONTROLLER_DIGITAL_L1, &rightWin
 PistonControl auxControlElevate(&master, pros::E_CONTROLLER_DIGITAL_X, &auxElevation);
 
 // Sets up cata control using current to stop the motor at a designated angle
-CataControl controlCata(&master, pros::E_CONTROLLER_DIGITAL_A, &cata, 2020,
+CataControl controlCata(&master, pros::E_CONTROLLER_DIGITAL_A, &cata, 2100,
 						&auxControlElevate, &matchContact); //2280
 
 // Sets up Automous path selector

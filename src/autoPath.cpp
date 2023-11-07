@@ -1,4 +1,5 @@
 #include "autoPath.h"
+#include "lemlib/chassis/chassis.hpp"
 #include "main.h"
 #include "pros/rtos.hpp"
 
@@ -9,7 +10,7 @@ void Routes::matchload() {
     //score alliance triball
     double y = 54.4;
     intake = 127;
-    chassis. moveTo(2.62, 53.65, 2000);
+    chassis.moveTo(2.62, 53.65, 2000);
     intake = 0;
     chassis.angleTurnTo(-87.45, 1000);
     intake = -127;
@@ -225,7 +226,7 @@ void Routes::placehold2() {
     
 
     intake = 127;
-    chassis.moveTo(7.34, 65.36, 800); //1000
+    chassis.moveTo(7.34, 65.36, 800); //1000 
     chassis.angleTurnTo(-67.19, 800);
     
     
@@ -249,7 +250,8 @@ void Routes::placehold2() {
     controlLeftWing.overrideState(1);
     controlRightWing.overrideState(1);
     chassis.moveTo(22.19, 58.29, 1500);
-    
+
+    //TEST    
     
     
     
@@ -292,10 +294,60 @@ void Routes::placehold3() {
 }
 
 void Routes::placehold4() {
+    //VERY SAFE AWP
+    /*
+    controlLeftWing.overrideState(1);
+    chassis.moveTo(-0.053, -7.98, 1000);
+    chassis.angleTurnTo(16.46, 1000);
+    controlLeftWing.overrideState(0);
+    chassis.angleTurnTo(-90.19, 1000);
+    chassis.moveTo(-36.13, -8.38, 1000);
+    chassis.angleTurnTo(-134.54, 1000);
+    intake = 127;
+    chassis.moveTo(-47.32, -18.95, 1000);
+    pros::delay(150);
+    chassis.angleTurnTo(-47.98, 1000);
+    intake = -127;
+    pros::delay(150);
+    chassis.angleTurnTo(130.44, 1000);
+    controlRightWing.overrideState(1);
+    controlLeftWing.overrideState(1);
+    chassis.moveTo(-62.52, -7.78, 1000);
+    */
+    //Comment on your code, Cody
+
+    //Eva tries to code
+    //chassis.moveTo(6, 70, 1000)
+
+
 
 }
 
 void Routes::placehold5() {
+    //VERY VERY SAFE AWP
+    intake = 127;
+    controlRightWing.overrideState(1);
+    pros::delay(250);
+    chassis.angleTurnTo(-37.03, 1000);
+    controlRightWing.overrideState(0);
+    intake = -127;
+    pros::delay(200);
+    chassis.moveTo(-3.26, 3.96, 800); //???
+
+    chassis.angleTurnTo(-224.79, 1000);
+    chassis.moveTo(-19.17, 21.96, 1000);
+    chassis.angleTurnTo(162.34, 800);
+    chassis.moveTo(-21.01, 48.52, 1000); //28.52
+
+    chassis.moveTo(-20.04, 25.43, 1000); //28.52
+    chassis.angleTurnTo(129.31, 1000);
+    chassis.moveTo(-11.16, 15.83, 1000);
+    chassis.angleTurnTo(-41.91, 1000);
+    chassis.moveTo(0.49, 4.78, 1200, 80);
+    blocker.overrideState(1);
+    chassis.angleTurnTo(-88.72, 1000);
+    chassis.angleTurnTo(-78.96, 800, 1.5, 0, false, 80);
+    chassis.moveTo(29.10, -0.252, 2000, 80);
 
 }
 

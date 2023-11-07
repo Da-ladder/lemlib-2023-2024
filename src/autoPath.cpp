@@ -319,6 +319,61 @@ void Routes::placehold4() {
     //Eva tries to code
     //chassis.moveTo(6, 70, 1000)
 
+    matchContact.overrideState(1);
+    intake = 127;
+    chassis.moveTo(-1.44, 48.35, 300, 110);
+    matchContact.overrideState(0);
+    chassis.moveTo(-1.44, 48.35, 1200, 90);
+    pros::delay(200);
+    chassis.moveTo(-1.52, 46.32, 1000);
+    chassis.angleTurnTo(-107.92, 1000);
+    controlLeftWing.overrideState(1);
+
+    chassis.moveTo(9.66, 49.58, 500, 90);
+    controlLeftWing.overrideState(0);
+    pros::delay(50);
+    chassis.moveTo(14.71, 51.25, 1000);
+    chassis.angleTurnTo(-154.14, 1000);
+    
+    chassis.moveTo(-9.32, 5.36, 800, 127);
+    chassis.moveTo(-9.32, 5.36, 1000, 50);
+    
+    // chassis.moveTo(-6.85, 6.39, 800, 127);
+    // chassis.moveTo(-6.85, 6.39, 1000, 50); //????
+
+    chassis.angleTurnTo(-261.32, 1000);
+    intake = -270;
+    pros::delay(150);
+    
+    chassis.angleTurnTo(-379.48, 1000);
+    controlRightWing.overrideState(1);
+    chassis.moveTo(-5.99, 1.06, 1000);
+    chassis.angleTurnTo(-439.97, 1000);
+    controlRightWing.overrideState(0);
+    chassis.angleTurnTo(-429.03, 600);
+    chassis.moveTo(7.20, -3.75, 1000);
+
+    chassis.angleTurnTo(-457.48, 700);
+
+    //chassis.moveTo(30.55, -0.65, 1000);
+    //chassis.moveTo(20.27, -2.46, 1000);
+
+
+    // chassis.moveTo(30.55, 0.85, 1000);
+    // blocker.overrideState(1);
+    
+
+    
+    /*
+    chassis.angleTurnTo(-414.08, 1000);
+    controlRightWing.overrideState(1);
+    pros::delay(150);
+    chassis.angleTurnTo(-447.41, 1000);
+    */
+
+
+
+
 
 
 }

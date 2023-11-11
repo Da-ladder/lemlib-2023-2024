@@ -195,7 +195,7 @@ class Chassis {
         void follow(const char* filePath, int timeout, float lookahead, bool reverse = false, float maxSpeed = 127,
                     bool log = false);
 
-        void followFromVector(std::vector<std::string>* pointList, int timeout, float lookahead, bool reverse = false, float maxSpeed = 127, bool log = false);
+        void followFromVector(std::vector<std::string>* pointList, int timeout, float lookahead, bool reverse = false, float maxSpeed = 127, int multix = 12, bool log = false);
     private:
         ChassisController_t lateralSettings;
         ChassisController_t angularSettings;

@@ -271,7 +271,7 @@ void autonomous() { roam.autoRoute(); }
 void opcontrol() {
   std::vector<std::string> storagePoints{};
 
-  bool dev_mode = false;
+  bool dev_mode = true;
   int times = 0;
   // autonomous();
   // roam.initall();
@@ -349,26 +349,25 @@ void opcontrol() {
     right_side_motors = right;
 
     if (dev_mode) {
-      developerMode.main();
-      // storagePoints.push_back(("drive ->angleTurnTo(%f, 1000);", pos.theta));
-      // if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-      // std::printf("drive ->angleTurnTo(%f, 1000);\n", pos.theta); }
-      // if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
-      // std::printf("drive ->moveTo(%f, %f, 1500);\n", pos.x, pos.y); } if
-      // (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-      // lemlib::Pose
-      // pos = chassis.getPose(); // get the current position of the robot
-      // std::printf("\"%f, %f, %f\", ", pos.x, pos.y, pos.theta);
-      // if (times == 4) {
-      // std::printf("\n");
-      // times = 0;
-      // }
-      // times++;
-      // }
-
+      // developerMode.main();
+      //  storagePoints.push_back(("drive ->angleTurnTo(%f, 1000);",
+      //  pos.theta)); if
+      //  (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+      //  std::printf("drive ->angleTurnTo(%f, 1000);\n", pos.theta); }
+      //  if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
+      //  std::printf("drive ->moveTo(%f, %f, 1500);\n", pos.x, pos.y); } if
+      if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+        lemlib::Pose pos =
+            chassis.getPose(); // get the current position of the robot
+        std::printf("\"%f, %f, %f\", ", pos.x, pos.y, pos.theta);
+        if (times == 4) {
+          std::printf("\n");
+          times = 0;
+        }
+        times++;
+      }
       // std::printf("drive ->angleTurnTo(%f, 1000);", pose.theta);
     }
-
-    pros::delay(20); // should be 20
+    pros::delay(70); // should be 20
   }
 }

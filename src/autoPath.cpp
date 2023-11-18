@@ -370,25 +370,28 @@ void Routes::placehold4() {
   //chassis.moveTo(-1.52, 46.32, 500);
   controlLeftWing.overrideState(1);
   chassis.angleTurnTo(-110.23, 500);
-  chassis.moveTo(18.041, 52.51, 800);
+  chassis.moveTo(10.09, 52.65, 800); 
   controlLeftWing.overrideState(0);
+  chassis.moveTo(18.041, 52.51, 800);
   chassis.angleTurnTo(-154.22, 700);
   chassis.moveTo(-0.11, 10.8, 900);
   chassis.angleTurnTo(-256.54, 700);
   intake = -127;
   pros::delay(150);
   chassis.angleTurnTo(-372.76, 600);
-
   controlRightWing.overrideState(1);
-  chassis.angleTurnTo(410.04, 600);
+  chassis.angleTurnTo(-404.54, 600);
+  //chassis.angleTurnTo(410.04, 600);
   controlRightWing.overrideState(0);
-  chassis.angleTurnTo(-444.13, 800);
+  //chassis.angleTurnTo(-444.13, 800);
   chassis.moveTo(16.37, 7.76, 700);
   chassis.angleTurnTo(-463.90, 600);
+  blocker.overrideState(1);
   chassis.moveTo(38.37, 12.9, 800);
-
-  
-  
+  /*chassis.angleTurnTo(-457.5, 600);
+  chassis.moveTo(11.79, 9.94, 800);
+  chassis.angleTurnTo(-608.16, 600);
+  */
 
   /*
   controlLeftWing.overrideState(1);

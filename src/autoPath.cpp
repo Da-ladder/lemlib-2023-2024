@@ -7,77 +7,88 @@
 
 PeerPursuit pursuitPath;
 
-std::vector<std::string> testering{"-0.000000, -0.000609, 0.005470",
-                                   "-0.000001, -0.003941, 0.035421",
-                                   "-0.000039, -0.028546, 0.103621",
-                                   "-0.000329, -0.136581, 0.156949",
-                                   "-0.001141, -0.404552, 0.194780",
-                                   "-0.003044, -0.894530, 0.239705",
-                                   "-0.006169, -1.642205, 0.230131",
-                                   "-0.009980, -2.611398, 0.223247",
-                                   "-0.015158, -3.702144, 0.314752",
-                                   "-0.020757, -4.864759, 0.211024",
-                                   "-0.024338, -6.066310, 0.151271",
-                                   "-0.027314, -7.323015, 0.128383",
-                                   "-0.030604, -8.577286, 0.160094",
-                                   "-0.034727, -9.923304, 0.175226",
-                                   "-0.037142, -11.313547, -0.023962",
-                                   "-0.032441, -12.767032, -0.342922",
-                                   "-0.016746, -14.354298, -0.835345",
-                                   "0.017253, -15.983978, -1.555775",
-                                   "0.073548, -17.649563, -2.253984",
-                                   "0.148681, -19.239733, -3.163796",
-                                   "0.245195, -20.765314, -4.107307",
-                                   "0.364518, -22.225426, -5.316940",
-                                   "0.513613, -23.628744, -6.856665",
-                                   "0.697954, -24.976210, -8.779889",
-                                   "0.927566, -26.301252, -10.916307",
-                                   "1.198325, -27.559935, -13.491136",
-                                   "1.507234, -28.708660, -16.792664",
-                                   "1.840167, -29.694962, -20.511660",
-                                   "2.232192, -30.653811, -23.817915",
-                                   "2.665043, -31.571665, -26.625807",
-                                   "3.149249, -32.495773, -28.490032",
-                                   "3.689988, -33.466496, -29.667780",
-                                   "4.258495, -34.440338, -31.003437",
-                                   "4.834931, -35.365101, -33.062008",
-                                   "5.432022, -36.241192, -35.461979",
-                                   "6.027400, -37.043396, -37.647617",
-                                   "6.692434, -37.878506, -39.370163",
-                                   "7.337366, -38.647552, -40.596462",
-                                   "7.983311, -39.382198, -42.051285",
-                                   "8.673110, -40.126282, -43.637806",
-                                   "9.414188, -40.881981, -45.213017",
-                                   "10.205307, -41.646091, -46.798077",
-                                   "11.049374, -42.417564, -48.373188",
-                                   "11.951648, -43.194611, -50.211922",
-                                   "12.880155, -43.939125, -52.361839",
-                                   "13.848546, -44.656204, -54.607723",
-                                   "14.849613, -45.336910, -56.956249",
-                                   "15.855441, -45.961399, -59.467690",
-                                   "16.872028, -46.530422, -62.072739",
-                                   "17.904852, -47.048222, -64.687904",
-                                   "18.998623, -47.535294, -67.308395",
-                                   "20.049366, -47.945679, -70.092552",
-                                   "21.111500, -48.298664, -73.108452",
-                                   "22.232807, -48.607422, -76.036758",
-                                   "23.322996, -48.852814, -78.533913",
-                                   "24.440678, -49.058437, -80.554794",
-                                   "25.655619, -49.247337, -81.892151",
-                                   "27.072819, -49.433655, -83.039253",
-                                   "28.520960, -49.602562, -83.700394",
-                                   "29.402105, -49.692764, -84.457207",
-                                   "29.242952, -49.678093, -84.823097",
-                                   "29.038181, -49.659519, -84.835762",
-                                   "29.015799, -49.657497, -84.884850",
-                                   "29.009428, -49.656937, -84.942345",
-                                   "29.007750, -49.656792, -84.957489",
-                                   "29.000137, -49.656124, -85.026169",
-                                   "28.961786, -49.652843, -85.142685",
-                                   "28.928879, -49.650089, -85.286552",
-                                   "endData"};
+int waiter = -1;
+int onOffOps = 0;
+int pistonOnTime = 0;
+PistonControl *realz = nullptr;
+
+void pistonDelay(PistonControl *piston, int onOff, int wait, int onTime) {
+  realz = piston;
+  onOffOps = onOff;
+  waiter = wait;
+  pistonOnTime = onTime;
+}
+
+void pistonWait() {
+  while (true) {
+    if (waiter != 0) {
+      waiter--;
+    } else if (waiter == 0) {
+      realz->overrideState(onOffOps);
+      pros::delay(pistonOnTime);
+      realz->overrideState(0);
+      waiter = -1;
+    } else {
+    }
+    pros::delay(10);
+  }
+}
+
+int intakeWaiter = -1;
+int intakeOnOffOps = 0;
+int intakeOnTime = 0;
+int intakeSpeed = 0;
+
+void intakeDelay(int speed, int onOff, int onTime, int wait) {
+  intakeWaiter = wait;
+  intakeOnOffOps = onOff;
+  intakeOnTime = onTime;
+  intakeSpeed = speed;
+}
+
+void intakeAsync() {
+  while (true) {
+    if (intakeWaiter != 0) {
+      intakeWaiter--;
+    } else if (intakeWaiter == 0) {
+      intake = intakeSpeed;
+      pros::delay(intakeOnTime);
+      intakeWaiter = -1;
+    } else {
+    }
+    pros::delay(10);
+  }
+}
 
 void Routes::matchload() {
+  // LATE NIGHT EVAC OVERRIDE SAFE AWP. AP MAY NOT BE POSSIBLE
+  intake = 127;
+  chassis.moveTo(-1.03, -20.78, 700);
+  chassis.angleTurnTo(39.15, 500);
+  chassis.moveTo(-8.31, -30.58, 800);
+
+  chassis.moveTo(-5, -26.61, 600);
+  chassis.angleTurnTo(131.99, 800);
+  chassis.angleTurnTo(178.18, 700);
+  chassis.moveTo(-8.15, -7.93, 600);
+  chassis.angleTurnTo(222.26, 600);
+  chassis.moveTo(-3.58, -1.99, 800);
+  controlRightWing.overrideState(1);
+  pros::delay(200);
+  chassis.angleTurnTo(188.46, 600);
+  controlRightWing.overrideState(0);
+
+  chassis.angleTurnTo(152.61, 600);
+  chassis.moveTo(-9.52, 8.33, 600);
+  chassis.angleTurnTo(130.82, 400);
+  blocker.overrideState(1);
+  chassis.moveTo(-24.14, 22.05, 800);
+
+
+
+  //chassis.angleTurnTo(float angle, int timeout)
+
+  /*
   // score alliance triball
   double y = 54.4;
   intake = 127;
@@ -113,6 +124,7 @@ void Routes::matchload() {
   manual_control(-40, 0);
   pros::delay(2000);
   manual_control(0, 0);
+  */
 }
 
 void Routes::nomatchload() {
@@ -149,6 +161,9 @@ void Routes::nomatchload() {
 }
 
 void Routes::skills() {
+  pros::Task nameish(pistonWait);
+
+  pros::Task nameish2(intakeAsync);
   /* Skills route
   ezchas->leftSwing(30, 127);
   pros::delay(700);
@@ -157,12 +172,77 @@ void Routes::skills() {
   // pros::delay(600);
 
   manual_control(80, 0);
-  pros::delay(450);
-  manual_control(0, 0);
-  manual_control(-22, 65);
+  pros::delay(250);
+  manual_control(50, 50);
   pros::delay(500);
   manual_control(15, -15); // equal before
   auxControlElevate.overrideState(1);
+  pros::delay(200);
+  manual_control(17, 17);
+  pros::delay(200);
+  manual_control(0, 0);
+  chassis.angleTurnTo(-21.76, 700);
+  manual_control(30, 30);
+  pros::delay(200);
+  manual_control(0, 0);
+  matchContact.overrideState(0);
+
+  //CATA LOADING
+  /*
+  controlCata.overRideCataState(true);
+  pros::delay(27000); // 27 secs
+  controlCata.overRideCataState(false);
+  */
+  auxControlElevate.overrideState(0);
+  
+
+  chassis.angleTurnTo(46.41, 550);
+
+  pistonDelay(&controlRightWing, 1, 250, 1000);
+  chassis.followFromVector(&pursuitPath.skills, 6000, 9, true);
+  controlLeftWing.overrideState(1);
+  chassis.moveTo(52.34, -50.23, 1400, 85); //55.34
+  chassis.angleTurnTo(3.5, 950, 1.5, 0, false, 45);
+  controlRightWing.overrideState(1);
+  controlLeftWing.overrideState(1);
+  pros::delay(100);
+  chassis.moveTo(50.563549, -81.292419, 750); //???
+  chassis.moveTo(50.611469, -63.747002, 600);
+  chassis.moveTo(50.563549, -89.292419, 800); //???
+  controlRightWing.overrideState(0);
+  controlLeftWing.overrideState(0);
+  pros::delay(100);
+
+  chassis.moveTo(53.894581, -46.632263, 700); //???
+  chassis.angleTurnTo(-0.632419, 400);
+  chassis.moveTo(48.467140, -51.774879, 700);
+  chassis.angleTurnTo(-84.753448, 700);
+  chassis.moveTo(76.459717, -49.749546, 800);
+  controlLeftWing.overrideState(1);
+  chassis.angleTurnTo(32.10, 1000, 1.5, 0, false, 35);
+  //controlRightWing.overrideState(1);
+  chassis.moveTo(60.536640, -82.125137, 1000, 100);
+  controlLeftWing.overrideState(0);
+  //controlRightWing.overrideState(0);
+  chassis.angleTurnTo(-90, 700);
+  chassis.moveTo(0.751871, -73.471039, 400);
+  chassis.moveTo(0.751871, -73.471039, 700, 80);
+  chassis.angleTurnTo(-28.51, 450);
+  controlLeftWing.overrideState(1);
+  controlRightWing.overrideState(1);
+  chassis.followFromVector(&pursuitPath.skillspt2, 4000, 8, true);
+  controlLeftWing.overrideState(0);
+  controlRightWing.overrideState(0);
+  manual_control(127, 127);
+  pros::delay(200);
+  manual_control(0, 0);
+
+
+  /*
+  manual_control(-22, 65);
+  pros::delay(500);
+  manual_control(15, -15); // equal before
+  auxControlElevate.overrideState(1)  ;
   pros::delay(200);
   manual_control(17, 17);
   pros::delay(400);
@@ -171,12 +251,14 @@ void Routes::skills() {
   // chassis.followFromVector(&pursuitPath.route1, 5000, 12);
   // chassis.followFromVector(&pursuitPath.skills, 800, 10, false, 40);
 
-  chassis.angleTurnTo(-25.19, 700);
+  //chassis.angleTurnTo(-21.24, 700);
   manual_control(30, 30);
   pros::delay(200);
   manual_control(0, 0);
-  chassis.angleTurnTo(-25.19, 800);
+  chassis.angleTurnTo(-21.24, 900);
+  */
 
+  /*
   controlCata.overRideCataState(true);
   pros::delay(27000); // 27 secs
   controlCata.overRideCataState(false);
@@ -202,6 +284,7 @@ void Routes::skills() {
 
   chassis.moveTo(58.02, -68.78, 1000);
   chassis.moveTo(58.02, -88.60, 1000);
+  */
 }
 
 void Routes::placehold1() {
@@ -300,7 +383,9 @@ void Routes::placehold2() {
 }
 
 void Routes::placehold3() {
+  // VERY SAFE AUTO. TAKES OUT OF MATCHLOAD ZONE AND THEN TOUCHES ALLIANCE BAR
   // far side safe get center unsided triball
+  /*
   intake = 127;
   chassis.moveTo(-0.160420, 29.762564, 1000, 80);
   pros::delay(200);
@@ -326,6 +411,16 @@ void Routes::placehold3() {
   chassis.moveTo(0.65, 3.48, 1000);
   chassis.angleTurnTo(-2.38, 1000);
   chassis.moveTo(-0.82, 31.43, 1000);
+  */
+  controlRightWing.overrideState(1);
+  pros::delay(400);
+  chassis.angleTurnTo(-28.42, 600);
+  controlRightWing.overrideState(0);
+  chassis.angleTurnTo(-79.26, 600);
+  chassis.moveTo(14.09, -1.91, 700);
+  chassis.angleTurnTo(-90.8, 300);
+  blocker.overrideState(1);
+  chassis.moveTo(34.07, -2.22, 900, 90);
 }
 
 void Routes::placehold4() {
@@ -439,54 +534,6 @@ void Routes::placehold4() {
   */
 }
 
-int waiter = -1;
-int onOffOps = 0;
-PistonControl *realz = nullptr;
-
-void pistonDelay(PistonControl *piston, int onOff, int wait) {
-  realz = piston;
-  onOffOps = onOff;
-  waiter = wait;
-}
-
-void pistonWait() {
-  while (true) {
-    if (waiter != 0) {
-      waiter--;
-    } else if (waiter == 0) {
-      realz->overrideState(onOffOps);
-      waiter = -1;
-    } else {
-    }
-    pros::delay(10);
-  }
-}
-
-int intakeWaiter = -1;
-int intakeOnOffOps = 0;
-int intakeOnTime = 0;
-int intakeSpeed = 0;
-
-void intakeDelay(int speed, int onOff, int onTime, int wait) {
-  intakeWaiter = wait;
-  intakeOnOffOps = onOff;
-  intakeOnTime = onTime;
-  intakeSpeed = speed;
-}
-
-void intakeAsync() {
-  while (true) {
-    if (intakeWaiter != 0) {
-      intakeWaiter--;
-    } else if (intakeWaiter == 0) {
-      intake = intakeSpeed;
-      pros::delay(intakeOnTime);
-      intakeWaiter = -1;
-    } else {
-    }
-    pros::delay(10);
-  }
-}
 
 void Routes::placehold5() {
   // 6 ball SAFE side
@@ -537,7 +584,7 @@ void Routes::placehold5() {
   chassis.angleTurnTo(-472.11, 500);
   controlRightWing.overrideState(1);
   chassis.followFromVector(&pursuitPath.autopt3, 1650, 8, true);
-  pistonDelay(&controlRightWing, 0, 50);
+  pistonDelay(&controlRightWing, 0, 50, 10);
   //chassis.moveTo(-1.46, 0.64, 800);
   //controlRightWing.overrideState(0);
 

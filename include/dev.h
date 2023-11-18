@@ -231,7 +231,7 @@ class DevPidTune {
         if (devControl->get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) { changeSetting(-increment, fwdTurn); }
         //devControl->print(2, 1, "RES: %f", getResolution());
         //pros::delay(50);
-        //display();
+        display();
     }
 
 

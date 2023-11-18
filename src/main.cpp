@@ -89,9 +89,9 @@ lemlib::Drivetrain_t drivetrain{
 
 // Sets the pid for lateral control
 lemlib::ChassisController_t lateralController{
-    15,  // kP
-    17,  // kD
-    10,  // kI
+    13.5,  // kP
+    52,  // kD
+    0,  // kI
     .1,  // smallErrorRange
     400, // smallErrorTimeout
     2,   // largeErrorRange
@@ -101,8 +101,8 @@ lemlib::ChassisController_t lateralController{
 
 // Sets the pid for turning control
 lemlib::ChassisController_t angularController{
-    3.5, // kP
-    26,  // kD
+    4.3, // kP
+    46,  // kD
     0,   // kI
     1,   // smallErrorRange
     100, // smallErrorTimeout
@@ -218,7 +218,7 @@ void initialize() {
   master.clear();
   // chassisThermo.coast();
   pros::delay(150);
-  // devControl.clear();
+  devControl.clear();
   // pros::Task tempMonitor(moniterStart); //idk if this slows down anything???
   pros::Task pistonControls(pistonUtils);
   pros::Task cat(cataUtil);
@@ -349,25 +349,27 @@ void opcontrol() {
     right_side_motors = right;
 
     if (dev_mode) {
-      // developerMode.main();
+      developerMode.main();
       //  storagePoints.push_back(("drive ->angleTurnTo(%f, 1000);",
       //  pos.theta)); if
       //  (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
       //  std::printf("drive ->angleTurnTo(%f, 1000);\n", pos.theta); }
       //  if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
       //  std::printf("drive ->moveTo(%f, %f, 1500);\n", pos.x, pos.y); } if
+      
       if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-        lemlib::Pose pos =
-            chassis.getPose(); // get the current position of the robot
+        lemlib::Pose pos = chassis.getPose(); // get the current position of the robot
         std::printf("\"%f, %f, %f\", ", pos.x, pos.y, pos.theta);
+        //std::printf("{%i, %i}, ", left, right);
         if (times == 4) {
           std::printf("\n");
           times = 0;
         }
         times++;
       }
+      
       // std::printf("drive ->angleTurnTo(%f, 1000);", pose.theta);
     }
-    pros::delay(70); // should be 20
+    pros::delay(50); // should be 20
   }
 }

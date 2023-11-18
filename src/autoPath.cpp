@@ -1,4 +1,5 @@
 #include "autoPath.h"
+#include "display/lv_draw/lv_draw_img.h"
 #include "lemlib/chassis/chassis.hpp"
 #include "main.h"
 #include "pros/rtos.hpp"
@@ -299,7 +300,7 @@ void Routes::placehold2() {
 }
 
 void Routes::placehold3() {
-  // far side safe
+  // far side safe get center unsided triball
   intake = 127;
   chassis.moveTo(-0.160420, 29.762564, 1000, 80);
   pros::delay(200);
@@ -355,45 +356,76 @@ void Routes::placehold4() {
 
   matchContact.overrideState(1);
   intake = 127;
-  chassis.moveTo(-1.44, 48.35, 300, 110);
+  chassis.moveTo(0.5, 50.98, 300, 110);
   matchContact.overrideState(0);
-  chassis.moveTo(-1.44, 48.35, 1200, 90);
-  pros::delay(200);
-  chassis.moveTo(-1.52, 46.32, 1000);
-  chassis.angleTurnTo(-107.92, 1000);
+  chassis.moveTo(0.5, 50.98, 1200, 90);
+  //pros::delay(100);
+  /*
+  manual_control(-127, -127);
+  pros::delay(150);
+  manual_control(0, 0);
+  pros::delay(100);
+  */
+  
+  //chassis.moveTo(-1.52, 46.32, 500);
   controlLeftWing.overrideState(1);
-
-  chassis.moveTo(9.66, 49.58, 500, 90);
+  chassis.angleTurnTo(-110.23, 500);
+  chassis.moveTo(18.041, 52.51, 800);
   controlLeftWing.overrideState(0);
-  pros::delay(50);
-  chassis.moveTo(14.71, 51.25, 1000);
-  chassis.angleTurnTo(-154.14, 1000);
+  chassis.angleTurnTo(-154.22, 700);
+  chassis.moveTo(-0.11, 10.8, 900);
+  chassis.angleTurnTo(-256.54, 700);
+  intake = -127;
+  pros::delay(150);
+  chassis.angleTurnTo(-372.76, 600);
 
-  chassis.moveTo(-9.32, 5.36, 800, 127);
-  chassis.moveTo(-9.32, 5.36, 1000, 50);
+  controlRightWing.overrideState(1);
+  chassis.angleTurnTo(410.04, 600);
+  controlRightWing.overrideState(0);
+  chassis.angleTurnTo(-444.13, 800);
+  chassis.moveTo(16.37, 7.76, 700);
+  chassis.angleTurnTo(-463.90, 600);
+
+  
+  
+
+  /*
+  controlLeftWing.overrideState(1);
+  chassis.moveTo(14.71, 51.25, 700); //???
+  
+  controlLeftWing.overrideState(0); //???
+  pros::delay(50);
+  chassis.moveTo(14.71, 51.25, 400);
+
+  chassis.angleTurnTo(-154.14, 300);
+
+  chassis.moveTo(-9.32, 5.36, 500, 127);
+  chassis.moveTo(-9.32, 5.36, 600, 50);
 
   // chassis.moveTo(-6.85, 6.39, 800, 127);
   // chassis.moveTo(-6.85, 6.39, 1000, 50); //????
 
-  chassis.angleTurnTo(-261.32, 1000);
+  chassis.angleTurnTo(-261.32, 500);
   intake = -270;
   pros::delay(150);
 
-  chassis.angleTurnTo(-379.48, 1000);
+  chassis.angleTurnTo(-379.48, 500);
   controlRightWing.overrideState(1);
-  chassis.moveTo(-5.99, 1.06, 1000);
-  chassis.angleTurnTo(-439.97, 1000);
+  chassis.moveTo(-5.99, 1.06, 700); //1k
+  chassis.angleTurnTo(-439.97, 400); //1k
   controlRightWing.overrideState(0);
-  chassis.angleTurnTo(-429.03, 600);
-  chassis.moveTo(7.20, -3.75, 1000);
+  chassis.angleTurnTo(-429.03, 300); //???
+  chassis.moveTo(7.20, -3.75, 700); //1k
 
-  chassis.angleTurnTo(-457.48, 700);
+  chassis.angleTurnTo(-462.52, 700);
+  chassis.moveTo(32.32, 1.45, 800);
 
   // chassis.moveTo(30.55, -0.65, 1000);
   // chassis.moveTo(20.27, -2.46, 1000);
 
   // chassis.moveTo(30.55, 0.85, 1000);
   // blocker.overrideState(1);
+  */
 
   /*
   chassis.angleTurnTo(-414.08, 1000);
@@ -406,6 +438,12 @@ void Routes::placehold4() {
 int waiter = -1;
 int onOffOps = 0;
 PistonControl *realz = nullptr;
+
+void pistonDelay(PistonControl *piston, int onOff, int wait) {
+  realz = piston;
+  onOffOps = onOff;
+  waiter = wait;
+}
 
 void pistonWait() {
   while (true) {
@@ -420,8 +458,206 @@ void pistonWait() {
   }
 }
 
+int intakeWaiter = -1;
+int intakeOnOffOps = 0;
+int intakeOnTime = 0;
+int intakeSpeed = 0;
+
+void intakeDelay(int speed, int onOff, int onTime, int wait) {
+  intakeWaiter = wait;
+  intakeOnOffOps = onOff;
+  intakeOnTime = onTime;
+  intakeSpeed = speed;
+}
+
+void intakeAsync() {
+  while (true) {
+    if (intakeWaiter != 0) {
+      intakeWaiter--;
+    } else if (intakeWaiter == 0) {
+      intake = intakeSpeed;
+      pros::delay(intakeOnTime);
+      intakeWaiter = -1;
+    } else {
+    }
+    pros::delay(10);
+  }
+}
+
 void Routes::placehold5() {
-  pros::Task egs(pistonWait);
+  // 6 ball SAFE side
+  pros::Task nameish(pistonWait);
+  pros::Task nameish2(intakeAsync);
+
+  intake = 127;
+  chassis.moveTo(1.25, 51.77, 1300);
+  //pros::delay(200);
+
+  //chassis.moveTo(1.25, 49.77, 200);
+  manual_control(-127, -127);
+  pros::delay(100);
+  manual_control(0, 0);
+  chassis.angleTurnTo(107.77, 350); //700
+  intake = -127;
+  pros::delay(200);
+  chassis.angleTurnTo(-43.63, 700); //700
+  intake = 127;
+  chassis.moveTo(-14.05, 60.85, 500); //900
+
+  chassis.angleTurnTo(-15.35, 300); //300
+  chassis.moveTo(-9.48, 39.88, 600); //800
+  chassis.angleTurnTo(81.88, 400); //700
+  intake = -127;
+  pros::delay(200);
+  chassis.angleTurnTo(-70.76, 600); //800
+  intake = 127;
+  chassis.moveTo(-24.6, 45.6, 600); //800
+  chassis.followFromVector(&pursuitPath.autopt2, 1650, 8, true);
+  chassis.moveTo(23.191, 42.94, 300); //400
+  //pros::delay(200);
+
+  chassis.angleTurnTo(-168.22, 400); //750
+  chassis.moveTo(-5.84, 0.74, 1200, 110); //1.4k
+  chassis.angleTurnTo(-272.89, 400); //800
+  intake = -127;
+  pros::delay(200);
+  intake = 127;
+  chassis.angleTurnTo(-84.74, 600); //800
+  chassis.moveTo(-22.67, 2.51, 600); //800
+  chassis.angleTurnTo(-427.64, 300); //500
+  chassis.moveTo(-39.63, 9.42, 700); //800
+  chassis.moveTo(-9.73, -1.99, 800); //1k
+  chassis.angleTurnTo(-291.1, 500); //800
+  intake = -127;
+  pros::delay(200);
+  chassis.angleTurnTo(-472.11, 500);
+  controlRightWing.overrideState(1);
+  chassis.followFromVector(&pursuitPath.autopt3, 1650, 8, true);
+  pistonDelay(&controlRightWing, 0, 50);
+  //chassis.moveTo(-1.46, 0.64, 800);
+  //controlRightWing.overrideState(0);
+
+  /*
+  chassis.angleTurnTo(-244.05, 700);
+  intake = -127;
+  pros::delay(200);
+  chassis.angleTurnTo(-158.23, 700);
+  chassis.moveTo(-18.48, 4.13, 500);
+  chassis.angleTurnTo(-73.94, 700);
+  chassis.moveTo(-44.28, 10.75, 900);
+  */
+  //chassis.followFromVector(&pursuitPath.autopt3, 2050, 8);
+  //chassis.angleTurnTo(-125.91, 700);
+  
+
+  /*
+  chassis.followFromVector(&pursuitPath.autopt1v2, 1750, 10, true);
+  pros::delay(200);
+  
+  chassis.angleTurnTo(-80.69, 700);
+  */
+
+  /*
+  intake = -127;
+  pros::delay(250);
+  chassis.angleTurnTo(-68.26, 710);
+  intake = 127;
+  chassis.moveTo(-27.602, 43.15, 800);
+  chassis.angleTurnTo(-107.37, 600);
+  controlLeftWing.overrideState(1);
+  chassis.followFromVector(&pursuitPath.autopt2, 1550, 10, true);
+  //pros::delay(200);
+  //chassis.followFromVector(&pursuitPath.autopt3, 1550, 10);
+  chassis.angleTurnTo(-170.53, 800);
+  chassis.moveTo(-9.27, 0.3, 1200);
+  chassis.angleTurnTo(-268.51, 750);
+  */
+  
+
+  
+  
+
+
+  /*
+  chassis.followFromVector(&pursuitPath.autopt3, 1550, 10);
+  intake = -127;
+  pros::delay(250);
+  chassis.angleTurnTo(-88.56, 800);
+  intake = 127;
+  chassis.moveTo(-27.07, 13.47, 1100);
+  chassis.angleTurnTo(-74.98, 800);
+
+  realz = &controlRightWing;
+  onOffOps = 1;
+  waiter = 50;
+
+  chassis.followFromVector(&pursuitPath.autopt4, 2200, 10, true);
+*/
+  
+
+
+
+
+  /*
+  chassis.moveTo(-0.10, 50.2, 1000);
+  pros::delay(200);
+  chassis.moveTo(0.05, 43.57, 800);
+  chassis.angleTurnTo(85.58, 600);
+  intake = -127;
+  pros::delay(200);
+  chassis.angleTurnTo(-27.13, 600);
+  intake = 127; 
+  
+
+  chassis.followFromVector(&pursuitPath.autopt2, 1000, 5, true);
+  chassis.angleTurnTo(55.77, 1000);
+  intake = -127;
+  pros::delay(200);
+  intake = 127;
+  chassis.angleTurnTo(-80.35, 700);
+  chassis.moveTo(-29.40, 46.64, 1000);
+  pros::delay(200);
+  chassis.followFromVector(&pursuitPath.autopt3, 1400, 5, true);
+  chassis.angleTurnTo(-247.63, 700);
+  intake = -127;
+  pros::delay(200);
+  chassis.angleTurnTo(-71.31, 800);
+  controlRightWing.overrideState(1);
+  chassis.moveTo(10, 47.09, 1000);
+  */
+
+
+
+  
+
+  //chassis.followFromVector(&pursuitPath.autopt3, 1000, 5);
+
+
+
+  //realz = &controlRightWing;
+  // onOffOps = 1;
+  // waiter = 30;
+  
+
+
+  //chassis.followFromVector(&pursuitPath.autopt2, 4000, 10, true); //WORKY
+  //chassis.angleTurnTo(100, 1000);
+  //manual_control(127,127);
+  //pros::delay(200);
+
+
+  /*
+  for (int i = 0; i < pursuitPath.opse.size(); i++) {
+  // Do something with vector[i]
+    manual_control(pursuitPath.opse[i][0], pursuitPath.opse[i][1]);
+    pros::delay(50);
+  }
+  */
+  
+
+  //pros::Task egs(pistonWait);
+
+
   // VERY VERY SAFE AWP
   // intake = 127;
   // pros::delay(200);
@@ -429,8 +665,8 @@ void Routes::placehold5() {
   // realz = &controlRightWing;
   // waiter = 30;
   // onOffOps = 1;
-  chassis.followFromVector(&testering, 3000, 15, true, 127, 15);
-  controlLeftWing.overrideState(1);
+  //chassis.followFromVector(&testering, 3000, 15, true, 127, 15); hmm
+  //controlLeftWing.overrideState(1); hmm
   // chassis.moveTo(7.307871, -35.735050, 200);
   // chassis.angleTurnTo(0, 600);
 

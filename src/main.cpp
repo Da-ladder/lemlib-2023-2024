@@ -218,7 +218,7 @@ void initialize() {
   master.clear();
   // chassisThermo.coast();
   pros::delay(150);
-  devControl.clear();
+  devControl.clear(); 
   // pros::Task tempMonitor(moniterStart); //idk if this slows down anything???
   pros::Task pistonControls(pistonUtils);
   pros::Task cat(cataUtil);
@@ -331,14 +331,23 @@ void opcontrol() {
     */
 
     // std::cout << "wwll well well" << std::endl; ???
+    int maxLeft = 127;
+    int maxRight = 127;
 
     int fwd = master.get_analog(ANALOG_LEFT_Y);
     int turn = master.get_analog(ANALOG_RIGHT_X);
-    int left = fwd + turn;
-    int right = fwd - turn;
+    int left = (fwd + turn); //*0.9;
+    int right = (fwd - turn) *0.9;
+    // if (left > maxLeft) { left = maxLeft; }
+    // if (right > maxRight) { right = maxRight; }
+    // if (left < -maxLeft) { left = -maxLeft; }
+    // if (right < -maxRight) { right = -maxRight; }
 
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
       intake = 127;
+      //left = (fwd + turn)/4;
+      //right = (fwd - turn)/4;
+
     } else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
       intake = -127;
     } else {

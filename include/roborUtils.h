@@ -208,24 +208,25 @@ class CataControl {
         *cata = 127;
       } else {
         if (reqTurnOff == 1) {
-          *cata = 0;
+          if (cata->get_current_draw() > stopAmp) {
+            *cata = 0;
+            reqTurnOff = 0;
+          }
           elevate->overrideState(0);
           matchLoadTouch->overrideState(0);
-          reqTurnOff = 0;
+          
         }
         
       }
       /*else if (!OnOff && cata->get_current_draw() > 100) {
         elevate->overrideState(0);
         matchLoadTouch->overrideState(0);
-        if (cata->get_current_draw() > stopAmp) {
-          *cata = 0;
-        }
+        
       } */
     }
 
     void overRideCataState(bool state) {
-      if (state) { OnOff = 1; } else { OnOff = 0; }
+      if (state) { reqTurnOff = 1; OnOff = 1;} else { reqTurnOff = 0; OnOff = 0;}
       setCataState();
     }
 

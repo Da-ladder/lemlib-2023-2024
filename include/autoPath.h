@@ -13,7 +13,9 @@ using namespace lemlib;
 class AutoCreater {
   private:
     //std::vector<std::string> routeNames = {};
+    
     std::vector<const char*> routeNames;
+    std::vector<const char*> testnames = {"reeee", "reeessdd2"};
     std::list<void(*)> runRoutes;
     int indexToRun = 0;
   
@@ -46,6 +48,7 @@ class AutoCreater {
         //if (potentiometer.get_value_calibrated()/100 > 4) {
         //    return "NOPE";
         //}
+        /*
         int value = potentiometer.get_value_calibrated()/100;
         if (value/100 >= 0 && value/100 < runRoutes.size()) {
             for (size_t i = 0; i < routeNames.size(); ++i) {
@@ -58,6 +61,10 @@ class AutoCreater {
         } else {
             return "OUT OF BOUNDS";
         }
+        */
+        //pros::delay(1000);
+
+        return testnames[0];
     }
     
     inline void run() {

@@ -226,7 +226,7 @@ class CataControl {
     }
 
     void overRideCataState(bool state) {
-      if (state) { reqTurnOff = 1; OnOff = 1;} else { reqTurnOff = 0; OnOff = 0;}
+      if (state) { reqTurnOff = 1; OnOff = 1;} else { reqTurnOff = 1; OnOff = 0;}
       setCataState();
     }
 

@@ -173,7 +173,7 @@ void Routes::skills() {
   pros::Task nameish(pistonWait);
   pros::Task nameish2(intakeAsync);
 
-  
+
 
 
   /* Skills route
@@ -182,7 +182,139 @@ void Routes::skills() {
   ezchas->rightSwing(-20, 127); //-20
   */
   // pros::delay(600);
+  chassis.followFromVector(&pursuitPath.autopt1, 1500, 9, true);
+  chassis.moveTo(-8.4, -31.3, 800);
+  chassis.moveTo(-4.03, -25.3, 600);
+  manual_control(80, -60); // r???
+  pros::delay(400);
+  manual_control(0, 0);
+  
 
+  
+  // CATA START ZONE
+  controlCata.overRideCataState(true);
+  pros::delay(31000); // 33 secs
+  controlCata.overRideCataState(false);
+  auxControlElevate.overrideState(0);
+  matchContact.overrideState(0);
+  // CATA END ZONE
+  chassis.angleTurnTo(169.28, 600);
+  chassis.followFromVector(&pursuitPath.autopt2, 5000, 9, true);
+  chassis.moveTo(-104.45, 41.45, 700);
+  chassis.moveTo(-100.37, 51.56, 1000);
+  chassis.angleTurnTo(45.22, 700);
+  chassis.moveTo(-106.7, 41, 1000);
+
+  
+  //chassis.moveTo(-105.46, 46.33, 1000);
+  chassis.moveTo(-102.58,49.47, 1000);
+  
+  chassis.angleTurnTo(-44.65, 800);
+  chassis.moveTo(-69.98, 17.36, 1000);
+  chassis.angleTurnTo(72.28, 900);
+  controlRightWing.overrideState(1);
+  controlLeftWing.overrideState(1);
+
+  chassis.moveTo(-99.85, 11.15, 900);
+  controlRightWing.overrideState(0);
+  chassis.angleTurnTo(128.69, 600);
+  chassis.moveTo(-111.02, 21.17, 800);
+
+  chassis.moveTo(-107.46, 16.95, 700);
+  controlLeftWing.overrideState(0);
+  pros::delay(200);
+
+  chassis.moveTo(-88.34, 0.54, 900);
+  chassis.angleTurnTo(42.38, 700);
+  chassis.moveTo(-116.89, -30.55, 1000);
+  chassis.angleTurnTo(183.8, 800);
+  controlRightWing.overrideState(1);
+  //controlLeftWing.overrideState(1);
+
+  chassis.followFromVector(&pursuitPath.autopt3, 2000, 9, true, 90);
+  chassis.moveTo(-126.07, 7.86, 600);
+  chassis.moveTo(-122.91, 5.13, 900);
+  controlRightWing.overrideState(0);
+  controlLeftWing.overrideState(0);
+  pros::delay(300);
+
+  chassis.angleTurnTo(104.06, 700);
+  chassis.moveTo(-107.22, -0.38, 800);
+  chassis.angleTurnTo(130.48, 700);
+
+  controlRightWing.overrideState(1);
+  controlLeftWing.overrideState(1);
+  pros::delay(100);
+  chassis.moveTo(-121.62, 12.75, 800);
+  chassis.moveTo(-117.19, 9.59, 800);
+  controlRightWing.overrideState(0);
+  controlLeftWing.overrideState(0);
+  manual_control(0, 0);
+  
+  pros::delay(100);
+  chassis.angleTurnTo(223.13, 800);
+  
+  chassis.moveTo(-75.12, 54.9, 1400);
+
+  blocker.overrideState(1);
+  auxControlElevate.overrideState(1);
+  chassis.angleTurnTo(131.58, 800);
+  chassis.moveTo(-44.97, 27.31, 1000);
+  
+  pros::delay(100);
+  manual_control(-127, -127);
+  pros::delay(200);
+  auxControlElevate.overrideState(0);
+  controlElevation.overrideState(1);
+  
+  
+  
+  
+
+  
+  
+
+  /* USELESS
+  //chassis.followFromVector(&pursuitPath.autopt4, 2000, 8, false, 80);
+  controlRightWing.overrideState(1);
+  controlLeftWing.overrideState(1);
+  chassis.moveTo(-121.26, 15.90, 800); // Is this needed?
+  chassis.moveTo(-122.68, 14.68, 800);
+  chassis.moveTo(-114.08, 6.79, 800);
+  chassis.moveTo(-122.68, 14.68, 800);
+
+  chassis.moveTo(-118, 8.35, 800);
+  controlRightWing.overrideState(0);
+  controlLeftWing.overrideState(0);
+
+  
+  chassis.angleTurnTo(222.13, 800);
+  blocker.overrideState(1);
+  chassis.moveTo(-74.2, 56, 1300);
+  chassis.angleTurnTo(131.67, 800);
+  chassis.moveTo(-44.56, 28.33, 1000);
+
+  auxControlElevate.overrideState(1);
+  manual_control(-127, -127);
+  pros::delay(400);
+  auxControlElevate.overrideState(0);
+  controlElevation.overrideState(1);
+  */
+
+
+
+  
+
+  
+
+
+
+
+  //chassis.followFromVector(&pursuitPath.autopt3, 3000, 9, true, 80);
+  //chassis.moveTo(-112.86, 15.71, 700);
+
+
+  /*
   manual_control(80, 0);
   pros::delay(250);
   manual_control(50, 50);
@@ -247,6 +379,7 @@ void Routes::skills() {
   manual_control(127, 127);
   pros::delay(200);
   manual_control(0, 0);
+  */
 
 
   /*
@@ -499,9 +632,9 @@ void Routes::placehold4() {
   chassis.moveTo(38.37, 12.9, 700);
   chassis.moveTo(12.18, 6.38, 800);
   chassis.angleTurnTo(-421.28, 600);
-  chassis.moveTo(-11.04, 17.72, 700);
-  chassis.angleTurnTo(-463.57, 700); 
-  chassis.moveTo(-20.28, 17.2, 600);
+  chassis.moveTo(-14.21, 17.31, 700);
+  //chassis.angleTurnTo(-463.57, 700); 
+  //chassis.moveTo(-20.28, 17.2, 600);
 
   //chassis.followFromVector(&pursuitPath.placehold4Curve, 2000, 7);
 

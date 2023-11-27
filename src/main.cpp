@@ -148,7 +148,7 @@ PistonControl auxControlElevate(&master, pros::E_CONTROLLER_DIGITAL_X,
                                 &auxElevation);
 
 // Sets up cata control using current to stop the motor at a designated angle
-CataControl controlCata(&master, pros::E_CONTROLLER_DIGITAL_A, &cata, 2100,
+CataControl controlCata(&master, pros::E_CONTROLLER_DIGITAL_A, &cata, 2200, // 2100 ???
                         &auxControlElevate, &matchContact); // 2280
 
 // Sets up Automous path selector
@@ -214,7 +214,7 @@ void ptoEZChas(bool state) {
  */
 void initialize() {
   pros::lcd::initialize();
-  chassis.calibrate();
+  // chassis.calibrate();
   master.clear();
   // chassisThermo.coast();
   pros::delay(150);
@@ -274,7 +274,8 @@ void opcontrol() {
   bool dev_mode = true;
   int times = 0;
   // autonomous();
-  // roam.initall();
+   roam.initall();
+   roam.updates();
   // potentiometer.calibrate();
   // pros::delay(2000);
 
@@ -285,8 +286,8 @@ void opcontrol() {
     pros::lcd::print(1, "y: %f", pose.y);           // print the y position
     pros::lcd::print(2, "heading: %f", pose.theta); // print the heading
     // pros::lcd::print(4, roam.returnPathTest());
-    // pros::lcd::print(5, "VALUE: %d", roam.getNUM());
-    // roam.updates();
+     pros::lcd::print(5, "VALUE: %d", roam.getNUM());
+     
 
     // Efficent+
 

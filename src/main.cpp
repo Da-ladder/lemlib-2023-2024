@@ -176,8 +176,8 @@ void pistonUtils() {
     matchContact.main();
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT) &&
         master.get_digital(pros::E_CONTROLLER_DIGITAL_X)) {
+      auxControlElevate.overrideState(0);
       controlElevation.overrideState(0);
-      auxControlElevate.overrideState(1);
     }
     controlRightWing.main();
     auxControlElevate.main();
@@ -214,7 +214,8 @@ void ptoEZChas(bool state) {
  */
 void initialize() {
   pros::lcd::initialize();
-  // chassis.calibrate();
+  chassis.calibrate();
+  roam.initall();
   master.clear();
   // chassisThermo.coast();
   pros::delay(150);
@@ -222,21 +223,25 @@ void initialize() {
   // pros::Task tempMonitor(moniterStart); //idk if this slows down anything???
   pros::Task pistonControls(pistonUtils);
   pros::Task cat(cataUtil);
-  roam.initall();
 }
 
 /**
  * @brief Runs when the field controller is in disabled mode. Don't run any
  * 		  physical items here.
  */
-void disabled() {}
+void disabled() {
+  if ((roam.getAuto1() == 1) && (roam.getDriver1() == 1)) {
+    auxControlElevate.overrideState(0);
+    controlElevation.overrideState(0);
+  }
+}
 
 /**
  * Runs after initialize(), and before autonomous when connected to the Field
  * Management System or the VEX Competition Switch. This is intended for
  * competition-specific initialization routines, such as an autonomous selector
  * on the LCD.
- *
+ * b 
  * This task will exit when the robot is enabled and autonomous or opcontrol
  * starts.
  */
@@ -253,7 +258,7 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() { roam.autoRoute(); }
+void autonomous() { roam.updates(); roam.runv2(); }
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -271,57 +276,21 @@ void autonomous() { roam.autoRoute(); }
 void opcontrol() {
   std::vector<std::string> storagePoints{};
 
-  bool dev_mode = true;
+  bool dev_mode = false;
   int times = 0;
   // autonomous();
-   roam.initall();
-   roam.updates();
   // potentiometer.calibrate();
   // pros::delay(2000);
 
   while (true) {
+    roam.updates();
+    roam.lcdOutPath();
     lemlib::Pose pose =
         chassis.getPose(); // get the current position of the robot
     pros::lcd::print(0, "x: %f", pose.x);           // print the x position
     pros::lcd::print(1, "y: %f", pose.y);           // print the y position
     pros::lcd::print(2, "heading: %f", pose.theta); // print the heading
-    // pros::lcd::print(4, roam.returnPathTest());
-     pros::lcd::print(5, "VALUE: %d", roam.getNUM());
-     
-
-    // Efficent+
-
-    switch (path.checkPath()) {
-    case AutoSelecter::MATCHLOAD:
-      pros::lcd::print(3, "MATCHLOAD");
-      break;
-    case AutoSelecter::NOMATCHLOAD:
-      pros::lcd::print(3, "NOMATCHLOAD");
-      break;
-    case AutoSelecter::SKILLS:
-      pros::lcd::print(3, "SKILLS");
-      break;
-    case AutoSelecter::PLACEHOLD1:
-      pros::lcd::print(3, "PLACEHOLD1");
-      break;
-    case AutoSelecter::PLACEHOLD2:
-      pros::lcd::print(3, "PLACEHOLD2");
-      break;
-    case AutoSelecter::PLACEHOLD3:
-      pros::lcd::print(3, "PLACEHOLD3");
-      break;
-    case AutoSelecter::PLACEHOLD4:
-      pros::lcd::print(3, "PLACEHOLD4");
-      break;
-    case AutoSelecter::PLACEHOLD5:
-      pros::lcd::print(3, "PLACEHOLD5");
-      break;
-    default:
-      pros::lcd::print(3, "None");
-    }
-
-    // if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
-    // roam.autoRoute(); }
+    //pros::lcd::print(4, roam.returnPathTest());
 
     /*
     if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN))
@@ -358,14 +327,18 @@ void opcontrol() {
     left_side_motors = left;
     right_side_motors = right;
 
+    if(pros::competition::is_connected()) {
+      roam.setDriver1(1);
+    }
+
+
+    if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+      roam.updates(); 
+      roam.runv2();
+    }
+
     if (dev_mode) {
       developerMode.main();
-      //  storagePoints.push_back(("drive ->angleTurnTo(%f, 1000);",
-      //  pos.theta)); if
-      //  (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-      //  std::printf("drive ->angleTurnTo(%f, 1000);\n", pos.theta); }
-      //  if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
-      //  std::printf("drive ->moveTo(%f, %f, 1500);\n", pos.x, pos.y); } if
       
       if (devControl.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
         lemlib::Pose pos = chassis.getPose(); // get the current position of the robot

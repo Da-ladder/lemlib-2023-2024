@@ -14,26 +14,45 @@ class AutoCreater {
   private:
     //std::vector<std::string> routeNames = {};
     
-    std::vector<const char*> routeNames;
-    std::vector<const char*> testnames = {"reeee", "reeessdd2"};
-    std::list<void(*)> runRoutes;
-    int indexToRun = 0;
+    static std::vector<const char*> routeNames;
+    //static std::vector<const char*> testnames;
+    static std::vector<void (*)()> runRoutesv2;
+    static std::list<void(*)> runRoutes;
+    static int indexToRun;
+    static int autoOver;
+    static int driverON;
   
   public:
     AutoCreater(const char *routeName, void routeCall()) { //
         //routeNames.push_back(std::string(routeName));
         routeNames.push_back(routeName);
-        runRoutes.push_back(&routeCall);
+        runRoutesv2.push_back(routeCall);
+    }
+
+    inline static void setDriver(int num) {
+        driverON = num;
+    }
+ 
+    inline void setAuto(int num) {
+        autoOver = num;
+    }
+
+    inline int getDriver() {
+        return driverON;
+    }
+
+    inline int getAuto() {
+        return autoOver;
     }
 
     inline void add(const char *routeName, void routeCall()) {
         //routeNames.push_back(std::string(routeName));
         routeNames.push_back(routeName);
-        runRoutes.push_back(&routeCall);
+        runRoutesv2.push_back(routeCall);
     }
 
     inline void updatePath() {
-        //this->indexToRun = potentiometer.get_value_calibrated()/100;
+        indexToRun = potentiometer.get_value_calibrated()/100;
     }
 
     inline int getIndex() {
@@ -41,16 +60,18 @@ class AutoCreater {
     }
 
     inline void printPath() {
-        pros::lcd::print(3, routeNames[indexToRun]);
+        //int value = potentiometer.get_value_calibrated()/100;
+        if (indexToRun >= 0 && indexToRun < routeNames.size()) {
+            pros::lcd::print(3, routeNames[indexToRun]);
+        } else {
+            pros::lcd::print(3, "OUT OF BOUNDS || CURRENT VALUE:", indexToRun);
+        }
+        
     }
 
     inline const char* returnPathName() {
-        //if (potentiometer.get_value_calibrated()/100 > 4) {
-        //    return "NOPE";
-        //}
-        /*
         int value = potentiometer.get_value_calibrated()/100;
-        if (value/100 >= 0 && value/100 < runRoutes.size()) {
+        if (value >= 0 && value < routeNames.size()) {
             for (size_t i = 0; i < routeNames.size(); ++i) {
                 const char* routeName = routeNames[i];
                 if (i == value) {
@@ -61,20 +82,11 @@ class AutoCreater {
         } else {
             return "OUT OF BOUNDS";
         }
-        */
-        //pros::delay(1000);
-
-        return testnames[0];
     }
     
     inline void run() {
-        if (indexToRun >= 0 && indexToRun < runRoutes.size()) {
-            auto it = runRoutes.begin(); // The iterator to use
-            std::advance(it, indexToRun); // Move the iterator to the desired function
-            (*it); // Calls the function
-        } else {
-            std::cout << "Index out of bounds." << std::endl;
-        }
+        this->setAuto(1);
+        runRoutesv2[indexToRun]();
     }
     
 };
@@ -110,16 +122,16 @@ class Routes{
     
     
      inline void initall() {
-        void (*fp)(void) = &this->matchload;
-        AutoCreater devtest("MatchloadA", (*fp));
 
-        devtest.add("No Match LoadB", &this->nomatchload);
-        devtest.add("Skill IssueC", &this->skills);
+
+        AutoCreater devtest("Matchload A", matchload);
+        devtest.add("No Match Load B", &this->nomatchload);
+        devtest.add("Skill Issue C", &this->skills);
         devtest.add("idk what this is tbh 1", &this->placehold1);
-        devtest.add("idk what this is tbh 2", &this->placehold2);
-        devtest.add("idk what this is tbh 3", &this->placehold3);
-        devtest.add("idk what this is tbh 4", &this->placehold4);
-        devtest.add("idk what this is tbh 5", &this->placehold5);
+        devtest.add("Driver Macro", &this->placehold2);
+        devtest.add("Safe AWP", &this->placehold3);
+        devtest.add("Flick ball over", &this->placehold4);
+        devtest.add("6 Balls", &this->placehold5);
 
         pathv2 = &devtest;
      }
@@ -142,6 +154,22 @@ class Routes{
      inline void updates() {
         pathv2->updatePath();
      }
+
+     inline void setDriver1(int num) {
+        pathv2->setDriver(num);
+    }
+
+    inline void setAuto1(int num) {
+        pathv2->setAuto(num);
+    }
+
+    inline int getDriver1() {
+        return pathv2->getDriver();
+    }
+
+    inline int getAuto1() {
+        return pathv2->getAuto();
+    }
     
      
 };

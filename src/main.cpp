@@ -276,7 +276,7 @@ void autonomous() { roam.updates(); roam.runv2(); }
 void opcontrol() {
   std::vector<std::string> storagePoints{};
 
-  bool dev_mode = false;
+  bool dev_mode = true;
   int times = 0;
   // autonomous();
   // potentiometer.calibrate();

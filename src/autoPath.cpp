@@ -336,6 +336,48 @@ void Routes::skills() {
 
 void Routes::placehold1() {
   pros::lcd::print(4, "PLACE HOLD 1");
+
+  pros::Task nameish(pistonWait);
+  pros::Task nameish2(intakeAsync);
+
+  intake = 127;
+  chassis.moveTo(0, 2, 500);
+
+  pistonDelay(&controlRightWing, 1, 47, 590);
+  chassis.followFromVector(&pursuitPath.evac, 2500, 8, true);
+  chassis.moveTo(21.25, -47.89, 600);
+  chassis.angleTurnTo(-71.02, 450);
+  manual_control(-127, -127);
+  pros::delay(400);
+  manual_control(0, 0);
+  
+
+  lemlib::Pose pose = chassis.getPose();
+  chassis.setPose(-33.92, -51.5, pose.theta);
+  chassis.moveTo(29.21, -51.47, 600);
+  chassis.angleTurnTo(0, 700);
+  intakeDelay(-127, 1, 400, 150);
+  chassis.followFromVector(&pursuitPath.evac2, 2800, 9);
+  intake = -127;
+  manual_control(127, 127);
+  pros::delay(500);
+  manual_control(0, 0);
+  chassis.moveTo(-16.27, -29.52, 700);
+  chassis.angleTurnTo(317.69, 700);
+  intake = 127;
+  chassis.moveTo(-29.19, -14.54, 1000);
+  chassis.angleTurnTo(162.09, 600);
+  manual_control(127, 127);
+  pros::delay(600);
+  manual_control(0, 0);
+
+
+
+  
+
+
+  
+  /*
   // STARTS with ALLIANCE TRIBALL and scores it in opp. goal and gets matchload
   // out touches the bar as well
   chassis.moveTo(-0.74, -23.66, 1000);
@@ -365,6 +407,7 @@ void Routes::placehold1() {
   chassis.moveTo(-21.37, 26.46, 1000, 60);
 
   // controlLeftWing.overrideState(1);
+  */
 }
 
 void Routes::placehold2() {

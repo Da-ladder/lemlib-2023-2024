@@ -195,6 +195,8 @@ void Routes::skills() {
   manual_control(80, -65); // r??? 80, -60
   pros::delay(320);
   manual_control(0, 0);
+  chassis.angleTurnTo(117.81, 500);
+
 
   AutoCreater::setDriver(1);
   
@@ -202,26 +204,49 @@ void Routes::skills() {
   
   // CATA START ZONE
   controlCata.overRideCataState(true);
-  pros::delay(29500); // 33 secs
+  pros::delay(750); // 33 secs
+  //pros::delay(400);
   controlCata.overRideCataState(false);
   auxControlElevate.overrideState(0);
   matchContact.overrideState(0);
   // CATA END ZONE
 
-  chassis.angleTurnTo(169.28, 600);
-  chassis.followFromVector(&pursuitPath.autopt2, 5000, 9, true);
-  //chassis.moveTo(-104.45, 41.45, 700);
-  chassis.moveTo(-102.58,49.47, 1000);
-  //chassis.moveTo(-100.37, 51.56, 1000);
-  chassis.angleTurnTo(45.22, 700);
+  // MTP chaining
+  chassis.angleTurnTo(169.26, 600);
+  chassis.moveTo(-11.96, 6.09, 420);
+  chassis.moveTo(-34.44, 26.11, 400);
+  chassis.moveTo(-63.24, 50.24, 390);
+  chassis.followFromVector(&pursuitPath.autopt2, 1590, 9, true);
+  //chassis.angleTurnTo(45.22, 550);
+
+  chassis.moveTo(-99.1, 55.56, 600);
+  chassis.angleTurnTo(45.22, 550);
+  manual_control(-127, -127);
+  pros::delay(410);
+  chassis.moveTo(-99.1, 55.56, 600);
+  chassis.angleTurnTo(45.22, 550);
+  manual_control(-127, -127);
+  pros::delay(290);
+
   
-  manual_control(-127, -127);
-  pros::delay(400);
-  chassis.moveTo(-102.58,49.47, 1000);
+  
+  
+
+  
+  //chassis.followFromVector(&pursuitPath.autopt2, 5000, 9, true);
+  
+  //manual_control(127, 127);
+  //pros::delay(420);
+  //manual_control(0, 0);
+
+  
+  //chassis.moveTo(-102.58,49.47, 1000); // Hmmm???
+  
+  //manual_control(0, 0);
   //chassis.moveTo(-100.37, 51.56, 1000);
-  chassis.angleTurnTo(45.22, 700);
-  manual_control(-127, -127);
-  pros::delay(400);
+  //chassis.angleTurnTo(45.22, 650);
+  //manual_control(-127, -127);
+  //pros::delay(400);
   manual_control(-50, -50);
   pros::delay(200);
   lemlib::Pose pose = chassis.getPose();
@@ -230,48 +255,51 @@ void Routes::skills() {
 
   
   //chassis.moveTo(-105.46, 46.33, 1000);
-  chassis.moveTo(-102.58,49.47, 800); //1k
+  chassis.moveTo(-102.58,49.47, 700); //1k
   
   chassis.angleTurnTo(-44.65, 600); //800
-  chassis.moveTo(-69.98, 17.36, 1200);
-  chassis.angleTurnTo(72.28, 1000);
+  chassis.moveTo(-69.98, 17.36, 1000); //1.2k
+  chassis.angleTurnTo(72.28, 800); // 1k
   controlRightWing.overrideState(1);
   controlLeftWing.overrideState(1);
 
-  chassis.moveTo(-98.27, 10.19, 900);
+  chassis.moveTo(-98.27, 10.19, 700); //900
   controlRightWing.overrideState(0);
   chassis.angleTurnTo(113.59, 600);
 
   
   manual_control(-127, -105);
-  pros::delay(570);
+  pros::delay(500); //570
   manual_control(-127, -127);
-  pros::delay(400);
+  pros::delay(490); //400
   manual_control(-70, -70);
-  pros::delay(200);
+  pros::delay(150); //200
   pose = chassis.getPose();
   chassis.setPose(-112.65, 17.19, pose.theta);
   //chassis.moveTo(-111.02, 21.17, 800); READY
 
-  chassis.moveTo(-107.46, 16.95, 600);
+  chassis.moveTo(-107.46, 16.95, 500);
   controlLeftWing.overrideState(0);
-  pros::delay(140);
+  pros::delay(100); //140
 
-  chassis.moveTo(-88.34, 0.54, 800);
+  chassis.moveTo(-88.34, 0.54, 700);
   chassis.angleTurnTo(42.38, 600);
-  chassis.moveTo(-116.89, -30.55, 1200);
-  chassis.angleTurnTo(183.8, 800);
+  chassis.moveTo(-116.89, -30.55, 860);
+  chassis.angleTurnTo(183.8, 880);
   controlRightWing.overrideState(1);
   //controlLeftWing.overrideState(1);
 
-  chassis.moveTo(-117.75, -5.85, 1000);
+  chassis.moveTo(-117.75, -5.85, 700);
   chassis.angleTurnTo(156.31, 600);
 
 
   
   manual_control(-100, -127);
-  pros::delay(1000);
+  pros::delay(900); //1k
+  manual_control(-127, -127);
+  pros::delay(300);
   manual_control(-70, -70);
+  pros::delay(60);
   
   pose = chassis.getPose();
   chassis.setPose(-119.96, 1.92, pose.theta);
@@ -282,26 +310,27 @@ void Routes::skills() {
   
   //chassis.followFromVector(&pursuitPath.autopt3, 2000, 9, true, 90);
   //chassis.moveTo(-126.07, 7.86, 600);
-  chassis.moveTo(-116.27, -1.91, 800);
+  chassis.moveTo(-116.27, -1.91, 100);
   controlRightWing.overrideState(0);
   controlLeftWing.overrideState(0);
+  chassis.moveTo(-116.27, -1.91, 700);
   //pros::delay(200);
 
-  chassis.angleTurnTo(104.06, 600);
+  chassis.angleTurnTo(104.06, 500);
   
   chassis.moveTo(-101.01, -6.23, 700);
-  chassis.angleTurnTo(132.65, 600);
+  chassis.angleTurnTo(132.65, 500);
 
   controlRightWing.overrideState(1);
   controlLeftWing.overrideState(1);
-  pros::delay(100);
+  pros::delay(240);
   manual_control(-127, -127);
-  pros::delay(800);
+  pros::delay(700);
   manual_control(-70, -70);
   pose = chassis.getPose();
   chassis.setPose(-113.98, 6.69, pose.theta);
 
-  chassis.moveTo(-110.71, 4.02, 800); // back off
+  chassis.moveTo(-110.71, 4.02, 700); // back off
 
   controlRightWing.overrideState(0);
   controlLeftWing.overrideState(0);
@@ -309,17 +338,17 @@ void Routes::skills() {
   
   
   controlCata.overRideCataState(true);
-  controlCata.overRideCataState(false);
   auxControlElevate.overrideState(0);
   matchContact.overrideState(0);
-  pros::delay(300);
-  chassis.angleTurnTo(218.56, 800);
+  pros::delay(200); //300
+  controlCata.overRideCataState(false);
+  chassis.angleTurnTo(218.56, 700);
   
-  chassis.moveTo(-75.12, 54.9, 1400);
+  chassis.moveTo(-75.12, 54.9, 1500);
 
   blocker.overrideState(1);
   auxControlElevate.overrideState(1);
-  chassis.angleTurnTo(129.13, 800);
+  chassis.angleTurnTo(129.13, 600);
 
   chassis.moveTo(-44.97, 27.31, 700);
   manual_control(127, 127);
@@ -327,10 +356,13 @@ void Routes::skills() {
   manual_control(0, 0);
   pros::delay(100);
   manual_control(-127, -127);
-  pros::delay(700);
-  manual_control(0, 0);
-  auxControlElevate.overrideState(0);
-  controlElevation.overrideState(0);
+  pros::delay(1000);
+  //manual_control(0, 0);
+  //auxControlElevate.overrideState(0);
+  //controlElevation.overrideState(0);
+  
+  
+  
   
 }
 
@@ -341,73 +373,74 @@ void Routes::placehold1() {
   pros::Task nameish2(intakeAsync);
 
   intake = 127;
-  chassis.moveTo(0, 2, 500);
+  chassis.moveTo(0, 2, 350);
 
-  pistonDelay(&controlRightWing, 1, 47, 590);
-  chassis.followFromVector(&pursuitPath.evac, 2500, 8, true);
-  chassis.moveTo(21.25, -47.89, 600);
-  chassis.angleTurnTo(-71.02, 450);
+  pistonDelay(&controlRightWing, 1, 47,590);
+  chassis.followFromVector(&pursuitPath.evac, 2500, 8, true, 90);
+  manual_control(100, 100);
+  pros::delay(100);
   manual_control(-127, -127);
-  pros::delay(400);
-  manual_control(0, 0);
-  
-
+  pros::delay(300);
+  manual_control(-60, -60);
   lemlib::Pose pose = chassis.getPose();
-  chassis.setPose(-33.92, -51.5, pose.theta);
-  chassis.moveTo(29.21, -51.47, 600);
-  chassis.angleTurnTo(0, 700);
-  intakeDelay(-127, 1, 400, 150);
-  chassis.followFromVector(&pursuitPath.evac2, 2800, 9);
+  chassis.setPose(36.55, -46.94, pose.theta);
+  pros::delay(40);
+
+  chassis.moveTo(32.61, -47.34, 350);
+  
+  chassis.angleTurnTo(-0.31, 550);
+  chassis.moveTo(29.98,-18.07,780);
+
+  chassis.angleTurnTo(134,650);
+  intake = -110;
+  pros::delay(275);
+
+  chassis.angleTurnTo(28.14, 550);
+  
+  intake = 127;
+  
+
+  
+  chassis.moveTo(36.54, -2.01, 650);
+  pros::delay(150);
+  chassis.angleTurnTo(142.66,750);
+  
+  //???
+  chassis.moveTo(50.69, -15.42, 650);
+  manual_control(127, 0);
+  intake = -100;
+  pros::delay(200);
+  manual_control(127, 127);
+  pros::delay(300);
+  manual_control(60, 60);
+
+
+  
+  chassis.moveTo(57.73, -22.21, 650);
+  chassis.angleTurnTo(44.5,650);
+  intake = 127;
+  pros::delay(100);
+  chassis.moveTo(59.37,-9.94,750);
+
+  chassis.angleTurnTo(176.93,750);
   intake = -127;
-  manual_control(127, 127);
-  pros::delay(500);
-  manual_control(0, 0);
-  chassis.moveTo(-16.27, -29.52, 700);
-  chassis.angleTurnTo(317.69, 700);
+  pros::delay(250); //300
+
+  chassis.angleTurnTo(-1.55,750);
   intake = 127;
-  chassis.moveTo(-29.19, -14.54, 1000);
-  chassis.angleTurnTo(162.09, 600);
+  chassis.moveTo(60.61,8.26,750);
+  pros::delay(150);
+  //chassis.moveTo(60.53,-3.55,750);
+  chassis.angleTurnTo(180,750);
   manual_control(127, 127);
-  pros::delay(600);
+  pros::delay(1000);
   manual_control(0, 0);
-
-
 
   
-
-
   
-  /*
-  // STARTS with ALLIANCE TRIBALL and scores it in opp. goal and gets matchload
-  // out touches the bar as well
-  chassis.moveTo(-0.74, -23.66, 1000);
-  intake = 127;
-  chassis.angleTurnTo(37.01, 800);
-  intake = 0;
-
-  // PUSH INTO GOAL
-
-  chassis.moveTo(-7.98, -31.15, 1000); // ORGINAL POINT
-
-  chassis.moveTo(-2.1, -23.54, 1000);
-
-  chassis.angleTurnTo(-175.1, 1300);
-
-  controlRightWing.overrideState(1);
-  chassis.moveTo(-2.95, -5.81, 1000);
-  controlRightWing.overrideState(0);
-
-  chassis.moveTo(-0.93, 3.54, 1000);
-
-  chassis.angleTurnTo(139.41, 800);
-  blocker.overrideState(1);
-  pros::delay(500);
-
-  chassis.moveTo(-23.39, 28.31, 2000, 50);
-  chassis.moveTo(-21.37, 26.46, 1000, 60);
-
-  // controlLeftWing.overrideState(1);
-  */
+  
+  
+  
 }
 
 void Routes::placehold2() {
@@ -418,6 +451,8 @@ void Routes::placehold2() {
   manual_control(80, -65); // r??? 80, -60
   pros::delay(320);
   manual_control(0, 0);
+  chassis.angleTurnTo(117.81, 500);
+
 
   AutoCreater::setDriver(1);
   
@@ -539,10 +574,11 @@ void Routes::placehold3() {
   chassis.angleTurnTo(-28.42, 600);
   controlRightWing.overrideState(0);
   chassis.angleTurnTo(-61.94, 600);
+  blocker.overrideState(1);
   
   chassis.moveTo(8.13, -5.86, 700);
   chassis.angleTurnTo(-87.45, 300);
-  blocker.overrideState(1);
+  
   chassis.moveTo(34.07, -2.22, 900, 90);
   
   
@@ -552,10 +588,10 @@ void Routes::placehold4() {
   pros::lcd::print(4, "PLACE HOLD 4");
   // VERY SAFE AWP
 
-  matchContact.overrideState(1);
+  //matchContact.overrideState(1);
   intake = 127;
   chassis.moveTo(0.5, 50.98, 300, 110);
-  matchContact.overrideState(0);
+  //matchContact.overrideState(0);
   chassis.moveTo(0.5, 50.98, 1200, 90);
   //pros::delay(100);
   
@@ -624,6 +660,8 @@ void Routes::placehold5() {
   intake = 127;
   chassis.moveTo(-24.6, 45.6, 600); //800
   chassis.followFromVector(&pursuitPath.evac, 1650, 8, true);
+
+  /*
   chassis.moveTo(23.191, 42.94, 300); //400
   //pros::delay(200);
 
@@ -635,6 +673,7 @@ void Routes::placehold5() {
   intake = 127;
   chassis.angleTurnTo(-84.74, 700); //800
   chassis.moveTo(-22.67, 2.51, 800); //800
+  */
   /*
   chassis.angleTurnTo(-427.64, 300); //500
   
@@ -645,7 +684,6 @@ void Routes::placehold5() {
   pros::delay(200);
   // chassis.turnTo(0, 0, 1000);
   // chassis.moveTo(0, 0, 1300);
-  /*
   chassis.angleTurnTo(-472.11, 500);
   controlRightWing.overrideState(1);
   chassis.followFromVector(&pursuitPath.autopt3, 1650, 8, true);

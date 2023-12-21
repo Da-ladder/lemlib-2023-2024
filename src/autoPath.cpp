@@ -204,11 +204,12 @@ void Routes::skills() {
   
   // CATA START ZONE
   controlCata.overRideCataState(true);
-  pros::delay(750); // 33 secs
+  pros::delay(28500); // 28 secs
   //pros::delay(400);
+  matchContact.overrideState(0);
+  pros::delay(1000);
   controlCata.overRideCataState(false);
   auxControlElevate.overrideState(0);
-  matchContact.overrideState(0);
   // CATA END ZONE
 
   // MTP chaining
@@ -388,23 +389,46 @@ void Routes::placehold1() {
 
   chassis.moveTo(32.61, -47.34, 350);
   
-  chassis.angleTurnTo(-0.31, 550);
-  chassis.moveTo(29.98,-18.07,780);
+  chassis.angleTurnTo(-0.31, 730);
+  
+  chassis.moveTo(28.73, -25.33, 780);
 
-  chassis.angleTurnTo(134,650);
-  intake = -110;
+  chassis.angleTurnTo(107.04, 650);
+  intake = -60;
   pros::delay(275);
 
-  chassis.angleTurnTo(28.14, 550);
+  chassis.angleTurnTo(24.13, 610);
   
   intake = 127;
   
 
   
-  chassis.moveTo(36.54, -2.01, 650);
+  chassis.moveTo(37.4, -4.3, 650);
+  controlLeftWing.overrideState(1);
+  manual_control(30 ,30);
   pros::delay(150);
-  chassis.angleTurnTo(142.66,750);
+  manual_control(0 ,0);
+
+
+  chassis.angleTurnTo(-45.86, 750);
+  chassis.moveTo(54.77, -13.75, 200);
+  chassis.moveTo(57.47, -26.24, 1000);
+  manual_control(-127, -127);
+  pros::delay(400);
+  manual_control(0, 0);
+  controlLeftWing.overrideState(0);
+  chassis.moveTo(58.14, -18.57, 500);
+  chassis.angleTurnTo(178.3, 800);
+  manual_control(127, 127);
+  pros::delay(500);
+  manual_control(0, 0);
+  chassis.angleTurnTo(-80.51, 700);
+  blocker.overrideState(1);
+
   
+
+  
+  /*
   //???
   chassis.moveTo(50.69, -15.42, 650);
   manual_control(127, 0);
@@ -413,28 +437,36 @@ void Routes::placehold1() {
   manual_control(127, 127);
   pros::delay(300);
   manual_control(60, 60);
+  
 
 
   
-  chassis.moveTo(57.73, -22.21, 650);
-  chassis.angleTurnTo(44.5,650);
+  //chassis.moveTo(57.73, -22.21, 690);
+  chassis.angleTurnTo(45.34, 880, 1.5, 0, false, 100);
   intake = 127;
   pros::delay(100);
-  chassis.moveTo(59.37,-9.94,750);
+  chassis.moveTo(63.25, -6.93, 750);
 
   chassis.angleTurnTo(176.93,750);
   intake = -127;
   pros::delay(250); //300
 
-  chassis.angleTurnTo(-1.55,750);
+  
+  chassis.angleTurnTo(-0.4, 750);
+  
   intake = 127;
-  chassis.moveTo(60.61,8.26,750);
+  chassis.moveTo(61.47, 8.24, 750);
   pros::delay(150);
   //chassis.moveTo(60.53,-3.55,750);
   chassis.angleTurnTo(180,750);
   manual_control(127, 127);
   pros::delay(1000);
   manual_control(0, 0);
+  */
+  
+  
+  
+  
 
   
   
@@ -599,16 +631,24 @@ void Routes::placehold4() {
   controlLeftWing.overrideState(1);
   chassis.angleTurnTo(-110.23, 350);
   chassis.moveTo(10.09, 52.65, 800); 
+  //controlLeftWing.overrideState(0);
+  chassis.moveTo(18.041, 52.51, 40);
+  
+  manual_control(-85, -80);
+  pros::delay(10);
   controlLeftWing.overrideState(0);
-  chassis.moveTo(18.041, 52.51, 800);
-  chassis.angleTurnTo(-154.22, 700);
-  chassis.moveTo(-0.11, 10.8, 900);
+  pros::delay(320);
+  //chassis.moveTo(18.041, 52.51, 710); // MTP change?
+  chassis.angleTurnTo(-154.22, 50);
+  chassis.angleTurnTo(-154.22, 650);
+  chassis.moveTo(-0.11, 10.8, 960, 90);
+  pros::delay(50);
   chassis.angleTurnTo(-256.54, 700);
   intake = -127;
   pros::delay(150);
   chassis.angleTurnTo(-372.76, 600);
   controlRightWing.overrideState(1);
-  chassis.angleTurnTo(-404.54, 600);
+  chassis.angleTurnTo(-404.54, 810); //600
   //chassis.angleTurnTo(410.04, 600);
   controlRightWing.overrideState(0);
   //chassis.angleTurnTo(-444.13, 800);

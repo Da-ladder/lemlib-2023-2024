@@ -9,8 +9,8 @@
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::Controller devControl(pros::E_CONTROLLER_PARTNER);
 
-pros::Motor intake(17, pros::E_MOTOR_GEARSET_18, false);
-pros::Motor cata(19, pros::E_MOTOR_GEARSET_36, false);
+pros::Motor intake(5, pros::E_MOTOR_GEARSET_18, true);
+pros::Motor cata(6, pros::E_MOTOR_GEARSET_36, false);
 pros::Motor immigrant(0, pros::E_MOTOR_GEARSET_06,
                       true); // Its taken over, hijacked
 
@@ -35,12 +35,12 @@ pros::IMU inert(1);
 Drive ezChassis{
     // Left Chassis Ports (negative port will reverse it!)
     //   the first port is the sensored port (when trackers are not used!)
-    {16, -18, -20}
+    {-12, 13, 14}
 
     // Right Chassis Ports (negative port will reverse it!)
     //   the first port is the sensored port (when trackers are not used!)
     ,
-    {11, 14, -15}
+    {-2, 3, 4}
 
     // IMU Port
     ,
@@ -214,7 +214,7 @@ void ptoEZChas(bool state) {
  */
 void initialize() {
   pros::lcd::initialize();
-  chassis.calibrate();
+  //chassis.calibrate();
   roam.initall();
   master.clear();
   // chassisThermo.coast();
@@ -304,10 +304,10 @@ void opcontrol() {
     int maxLeft = 127;
     int maxRight = 127;
 
-    int fwd = master.get_analog(ANALOG_LEFT_Y);
-    int turn = master.get_analog(ANALOG_RIGHT_X);
-    int left = (fwd + turn); //*0.9;
-    int right = (fwd - turn) *0.9;
+    int turn = -master.get_analog(ANALOG_LEFT_Y);
+    int fwd = master.get_analog(ANALOG_RIGHT_X);
+    int left = (-fwd - turn); //*0.9;
+    int right = (-fwd + turn);
     // if (left > maxLeft) { left = maxLeft; }
     // if (right > maxRight) { right = maxRight; }
     // if (left < -maxLeft) { left = -maxLeft; }
